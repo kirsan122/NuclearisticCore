@@ -1,0 +1,13 @@
+{
+  "type": "nuclearisticcore:distillation",
+  "input": {
+    "fluid": "nuclearisticcore:oil",
+    "amount": 100
+  },
+  "outputs": {
+    "output_0": { "fluid": "nuclearisticcore:associated_petroleum_gas", "amount": 15 },
+    "output_1": { "fluid": "nuclearisticcore:naphtha", "amount": 20 },
+    "output_2": { "fluid": "nuclearisticcore:heavy_naphtha", "amount": 25 },
+    "output_3": { "fluid": "nuclearisticcore:mazut", "amount": 40 }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearisticcore:block/ores/lead_ore"
+    }
+  }
+}

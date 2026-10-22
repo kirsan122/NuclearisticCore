@@ -1,0 +1,14 @@
+{
+  "type": "nuclearisticcore:crushing",
+  "ingredient": {
+    "item": "minecraft:granite"
+  },
+  "result": {
+    "item": "minecraft:cobblestone"
+  },
+  "resultSecond": {
+    "item": "minecraft:diorite",
+    "chance": 0.3
+  },
+  "energyConsumption": 15
+}

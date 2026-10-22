@@ -1,0 +1,11 @@
+{
+  "type": "nuclearisticcore:electrolysis",
+  "input": {
+    "fluid": "minecraft:water",
+    "amount": 2
+  },
+  "outputs": {
+    "output_0": { "fluid": "nuclearisticcore:hydrogen", "amount": 2 },
+    "output_1": { "fluid": "nuclearisticcore:oxygen", "amount": 1 }
+  }
+}

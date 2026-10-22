@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearisticcore:block/distillation_column/distillation_column_base",
+  "textures": {
+    "0": "nuclearisticcore:block/distillation_column/distillation_column_base_active"
+  }
+}

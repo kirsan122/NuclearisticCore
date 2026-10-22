@@ -1,4 +1,0 @@
-{
-  "parent": "minecraft:block/fence_inventory",
-  "textures": { "texture": "assembly_expansion:block/hevea/hevea_planks" }
-}

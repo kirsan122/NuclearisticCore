@@ -1,6 +1,6 @@
 {
   "values": [
-    "assembly_expansion:tin_ore",
-    "assembly_expansion:lead_ore"
+    "nuclearisticcore:tin_ore",
+    "nuclearisticcore:lead_ore"
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "type": "nuclearisticcore:sintering",
+  "base": {
+    "item": "minecraft:cobblestone"
+  },
+  "infusor": {
+    "tag": "nuclearisticcore:items_for_mossy_blocks"
+  },
+  "result": {
+    "item": "minecraft:mossy_cobblestone"
+  }
+}

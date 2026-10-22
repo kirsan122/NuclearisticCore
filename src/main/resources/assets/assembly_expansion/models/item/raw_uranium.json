@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "assembly_expansion:item/raw_materials/raw_uranium"
-  }
-}

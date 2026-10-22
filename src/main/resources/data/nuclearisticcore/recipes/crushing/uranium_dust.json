@@ -1,0 +1,10 @@
+{
+  "type": "nuclearisticcore:crushing",
+  "ingredient": {
+    "tag": "forge:ingots/uranium"
+  },
+  "result": {
+    "item": "nuclearisticcore:uranium_dust"
+  },
+  "energyConsumption": 20
+}

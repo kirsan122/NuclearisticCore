@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "assembly_expansion:block/storage_blocks/raw_tin_block"
-  }
-}

@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "nuclearisticcore:item/tools/engineering_hammer"
+  }
+}

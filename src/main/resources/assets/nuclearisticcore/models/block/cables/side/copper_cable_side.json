@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearisticcore:block/cables/side/cable_side",
+  "textures": {
+    "texture": "nuclearisticcore:block/cables/copper_cable"
+  }
+}

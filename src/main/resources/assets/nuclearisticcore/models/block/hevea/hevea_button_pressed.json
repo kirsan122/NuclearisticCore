@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button_pressed",
+  "textures": {
+    "texture": "nuclearisticcore:block/hevea/hevea_planks"
+  }
+}

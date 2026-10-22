@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "nuclearisticcore:block/hevea/hevea_planks",
+    "top": "nuclearisticcore:block/hevea/hevea_planks",
+    "side": "nuclearisticcore:block/hevea/hevea_planks"
+  }
+}

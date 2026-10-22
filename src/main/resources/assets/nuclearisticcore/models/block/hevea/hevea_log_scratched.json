@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "nuclearisticcore:block/hevea/hevea_log",
+    "up": "nuclearisticcore:block/hevea/hevea_log_top",
+    "down": "nuclearisticcore:block/hevea/hevea_log_top",
+    "north": "nuclearisticcore:block/hevea/hevea_log_scratched",
+    "south": "nuclearisticcore:block/hevea/hevea_log",
+    "east": "nuclearisticcore:block/hevea/hevea_log",
+    "west": "nuclearisticcore:block/hevea/hevea_log"
+  }
+}

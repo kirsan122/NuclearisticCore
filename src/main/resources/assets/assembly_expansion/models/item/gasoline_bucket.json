@@ -1,5 +1,0 @@
-{
-  "parent":"forge:item/bucket",
-  "fluid":"assembly_expansion:gasoline",
-  "loader":"forge:fluid_container"
-}

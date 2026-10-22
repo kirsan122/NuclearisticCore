@@ -1,4 +1,4 @@
-[04июн.2026 15:57:47.023] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\Asus\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.3.0, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, --mod, assembly_expansion, --all, --output, C:\Users\Asus\Desktop\AssemblyExpansion\src\generated\resources, --existing, C:\Users\Asus\Desktop\AssemblyExpansion\src\main\resources]
+[04июн.2026 15:57:47.023] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\Asus\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.3.0, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, --mod, nuclearisticcore, --all, --output, C:\Users\Asus\Desktop\AssemblyExpansion\src\generated\resources, --existing, C:\Users\Asus\Desktop\AssemblyExpansion\src\main\resources]
 [04июн.2026 15:57:47.033] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.16 by Microsoft; OS Windows 10 arch amd64 version 10.0
 [04июн.2026 15:57:47.101] [main/DEBUG] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Found launch services [fmlclientdev,forgeclient,minecraft,forgegametestserverdev,fmlserveruserdev,fmlclient,fmldatauserdev,forgeserverdev,forgeserveruserdev,forgeclientdev,forgeclientuserdev,forgeserver,forgedatadev,fmlserver,fmlclientuserdev,fmlserverdev,forgedatauserdev,testharness,forgegametestserveruserdev]
 [04июн.2026 15:57:47.134] [main/DEBUG] [cpw.mods.modlauncher.NameMappingServiceHandler/MODLAUNCHER]: Found naming services : [srgtomcp]
@@ -63,8 +63,8 @@
 [04июн.2026 15:57:47.569] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModListHandler/CORE]: Found mod coordinates from lists: []
 [04июн.2026 15:57:47.578] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/CORE]: Found Mod Locators : (mods folder:null),(maven libs:null),(exploded directory:null),(minecraft:null),(userdev classpath:null)
 [04июн.2026 15:57:47.579] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/CORE]: Found Dependency Locators : (JarInJar:null)
-[04июн.2026 15:57:47.595] [main/DEBUG] [net.minecraftforge.fml.loading.targets.CommonLaunchHandler/CORE]: Got mod coordinates assembly_expansion%%C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main;assembly_expansion%%C:\Users\Asus\Desktop\AssemblyExpansion\build\classes\java\main from env
-[04июн.2026 15:57:47.599] [main/DEBUG] [net.minecraftforge.fml.loading.targets.CommonLaunchHandler/CORE]: Found supplied mod coordinates [{assembly_expansion=[C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main, C:\Users\Asus\Desktop\AssemblyExpansion\build\classes\java\main]}]
+[04июн.2026 15:57:47.595] [main/DEBUG] [net.minecraftforge.fml.loading.targets.CommonLaunchHandler/CORE]: Got mod coordinates nuclearisticcore%%C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main;nuclearisticcore%%C:\Users\Asus\Desktop\AssemblyExpansion\build\classes\java\main from env
+[04июн.2026 15:57:47.599] [main/DEBUG] [net.minecraftforge.fml.loading.targets.CommonLaunchHandler/CORE]: Found supplied mod coordinates [{nuclearisticcore=[C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main, C:\Users\Asus\Desktop\AssemblyExpansion\build\classes\java\main]}]
 [04июн.2026 15:57:48.099] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar with {minecraft} mods - versions {1.20.1}
 [04июн.2026 15:57:48.109] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate C:\Users\Asus\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.3.0\d7ebc62120f202109e300e084ca1a31a7b946a62\javafmllanguage-1.20.1-47.3.0.jar
 [04июн.2026 15:57:48.110] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\Asus\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.3.0\d7ebc62120f202109e300e084ca1a31a7b946a62\javafmllanguage-1.20.1-47.3.0.jar is missing mods.toml file
@@ -75,7 +75,7 @@
 [04июн.2026 15:57:48.137] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate C:\Users\Asus\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.3.0\3b6be96aba3e323f3c918e8ef6a96312d82d76ad\fmlcore-1.20.1-47.3.0.jar
 [04июн.2026 15:57:48.138] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\Asus\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.3.0\3b6be96aba3e323f3c918e8ef6a96312d82d76ad\fmlcore-1.20.1-47.3.0.jar is missing mods.toml file
 [04июн.2026 15:57:48.149] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main
-[04июн.2026 15:57:48.170] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file main with {assembly_expansion} mods - versions {1.0.0}
+[04июн.2026 15:57:48.170] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file main with {nuclearisticcore} mods - versions {1.0.0}
 [04июн.2026 15:57:48.178] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate /
 [04июн.2026 15:57:48.186] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file  with {forge} mods - versions {47.3.0}
 [04июн.2026 15:57:48.228] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate C:\Users\Asus\.gradle\caches\forge_gradle\deobf_dependencies\mezz\jei\jei-1.20.1-forge\15.20.0.106_mapped_official_1.20.1\jei-1.20.1-forge-15.20.0.106_mapped_official_1.20.1.jar
@@ -96,7 +96,7 @@
 [04июн.2026 15:57:48.359] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar with {minecraft} mods - versions {1.20.1}
 [04июн.2026 15:57:48.366] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFile/LOADING]: Loading mod file C:\Users\Asus\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.20.1-47.3.0_mapped_official_1.20.1\forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar with languages [LanguageSpec[languageName=minecraft, acceptedVersions=1]]
 [04июн.2026 15:57:48.368] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main
-[04июн.2026 15:57:48.374] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file main with {assembly_expansion} mods - versions {1.0.0}
+[04июн.2026 15:57:48.374] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file main with {nuclearisticcore} mods - versions {1.0.0}
 [04июн.2026 15:57:48.375] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFile/LOADING]: Loading mod file C:\Users\Asus\Desktop\AssemblyExpansion\build\resources\main with languages [LanguageSpec[languageName=javafml, acceptedVersions=[47,)]]
 [04июн.2026 15:57:48.376] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate /
 [04июн.2026 15:57:48.379] [main/DEBUG] [net.minecraftforge.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file  with {forge} mods - versions {47.3.0}
@@ -183,12 +183,12 @@
 [04июн.2026 15:57:50.986] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(forge)
 [04июн.2026 15:57:50.986] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(forge)
 [04июн.2026 15:57:50.987] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(forge)]
-[04июн.2026 15:57:50.987] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(assembly_expansion)
-[04июн.2026 15:57:50.987] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(assembly_expansion)
-[04июн.2026 15:57:50.988] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(assembly_expansion)
-[04июн.2026 15:57:50.988] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(assembly_expansion)
-[04июн.2026 15:57:50.988] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(assembly_expansion)
-[04июн.2026 15:57:50.989] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(assembly_expansion)]
+[04июн.2026 15:57:50.987] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(nuclearisticcore)
+[04июн.2026 15:57:50.987] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(nuclearisticcore)
+[04июн.2026 15:57:50.988] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(nuclearisticcore)
+[04июн.2026 15:57:50.988] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(nuclearisticcore)
+[04июн.2026 15:57:50.988] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(nuclearisticcore)
+[04июн.2026 15:57:50.989] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(nuclearisticcore)]
 [04июн.2026 15:57:50.989] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(jei)
 [04июн.2026 15:57:50.989] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(jei)
 [04июн.2026 15:57:50.990] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(jei)
@@ -199,15 +199,15 @@
 [04июн.2026 15:57:50.992] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:ModLauncher Root Container(ModLauncher:4f56a0a2)]
 [04июн.2026 15:57:50.993] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(minecraft)]
 [04июн.2026 15:57:50.993] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(forge)]
-[04июн.2026 15:57:50.994] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(assembly_expansion)]
+[04июн.2026 15:57:50.994] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(nuclearisticcore)]
 [04июн.2026 15:57:50.994] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(jei)]
-[04июн.2026 15:57:50.995] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\Asus\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, assembly_expansion, --all, --output, C:\Users\Asus\Desktop\AssemblyExpansion\src\generated\resources, --existing, C:\Users\Asus\Desktop\AssemblyExpansion\src\main\resources]
+[04июн.2026 15:57:50.995] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\Asus\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, nuclearisticcore, --all, --output, C:\Users\Asus\Desktop\AssemblyExpansion\src\generated\resources, --existing, C:\Users\Asus\Desktop\AssemblyExpansion\src\main\resources]
 [04июн.2026 15:57:51.124] [main/DEBUG] [mixin/]: Error cleaning class output directory: .mixin.out
 [04июн.2026 15:57:51.128] [main/DEBUG] [mixin/]: Preparing mixins for MixinEnvironment[DEFAULT]
 [04июн.2026 15:57:51.419] [main/DEBUG] [io.netty.util.internal.logging.InternalLoggerFactory/]: Using SLF4J as the default logging framework
 [04июн.2026 15:57:51.423] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.level: simple
 [04июн.2026 15:57:51.424] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.targetRecords: 4
-[04июн.2026 15:57:51.707] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [assembly_expansion]
+[04июн.2026 15:57:51.707] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [nuclearisticcore]
 [04июн.2026 15:57:52.132] [main/DEBUG] [net.minecraftforge.coremod.transformer.CoreModBaseTransformer/COREMOD]: Transforming net/minecraft/world/entity/EntityType
 [04июн.2026 15:57:53.006] [main/DEBUG] [net.minecraftforge.coremod.transformer.CoreModBaseTransformer/COREMOD]: Transforming net/minecraft/world/level/block/LiquidBlock
 [04июн.2026 15:57:53.083] [main/DEBUG] [net.minecraftforge.coremod.transformer.CoreModBaseTransformer/COREMOD]: Transforming net/minecraft/world/level/block/StairBlock
@@ -265,7 +265,7 @@
 [04июн.2026 15:58:00.732] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@38f77cd9 - got cpw.mods.cl.ModuleClassLoader@7c974942
 [04июн.2026 15:58:00.733] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for net.minecraftforge.common.ForgeMod
 [04июн.2026 15:58:00.745] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@38f77cd9 - got cpw.mods.cl.ModuleClassLoader@7c974942
-[04июн.2026 15:58:00.745] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for com.kirsan122.assemblyexpansion.AssemblyExpansion
+[04июн.2026 15:58:00.745] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for com.kirsan122.nuclearisticcore.AssemblyExpansion
 [04июн.2026 15:58:00.748] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@38f77cd9 - got cpw.mods.cl.ModuleClassLoader@7c974942
 [04июн.2026 15:58:00.749] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for mezz.jei.forge.JustEnoughItems
 [04июн.2026 15:58:00.822] [modloading-worker-0/DEBUG] [net.minecraftforge.versions.forge.ForgeVersion/CORE]: Forge Version package package net.minecraftforge.versions.forge, Forge, version 47.3 from cpw.mods.modlauncher.TransformingClassLoader@38f77cd9
@@ -278,8 +278,8 @@
 [04июн.2026 15:58:00.825] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.3.0, for MC 1.20.1 with MCP 20230612.114412
 [04июн.2026 15:58:00.827] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.3.0 Initialized
 [04июн.2026 15:58:00.835] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file jei-server.toml for jei tracking
-[04июн.2026 15:58:00.930] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for assembly_expansion
-[04июн.2026 15:58:00.948] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.kirsan122.assemblyexpansion.AssemblyExpansion$ClientModEvents to MOD
+[04июн.2026 15:58:00.930] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for nuclearisticcore
+[04июн.2026 15:58:00.948] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.kirsan122.nuclearisticcore.AssemblyExpansion$ClientModEvents to MOD
 [04июн.2026 15:58:00.950] [modloading-worker-0/DEBUG] [mezz.jei.common.platform.Services/]: Loaded mezz.jei.forge.platform.PlatformHelper@66a1396 for service interface mezz.jei.common.platform.IPlatformHelper
 [04июн.2026 15:58:00.997] [modloading-worker-0/DEBUG] [io.netty.util.internal.PlatformDependent0/]: -Dio.netty.noUnsafe: false
 [04июн.2026 15:58:00.997] [modloading-worker-0/DEBUG] [io.netty.util.internal.PlatformDependent0/]: Java version: 17
@@ -370,7 +370,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [04июн.2026 15:58:01.306] [modloading-worker-0/DEBUG] [mezz.jei.common.config.file.ConfigSerializer/]: Saving config file: C:\Users\Asus\Desktop\AssemblyExpansion\run-data\config\jei\jei-client.ini
 [04июн.2026 15:58:01.324] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
 [04июн.2026 15:58:01.332] [modloading-worker-0/DEBUG] [mezz.jei.library.load.PluginCallerTimerRunnable/]: Sending ConfigManager: jei:minecraft...
-[04июн.2026 15:58:01.333] [modloading-worker-0/DEBUG] [mezz.jei.library.load.PluginCallerTimerRunnable/]: Sending ConfigManager: assembly_expansion:jei_plugin...
+[04июн.2026 15:58:01.333] [modloading-worker-0/DEBUG] [mezz.jei.library.load.PluginCallerTimerRunnable/]: Sending ConfigManager: nuclearisticcore:jei_plugin...
 [04июн.2026 15:58:01.333] [modloading-worker-0/DEBUG] [mezz.jei.library.load.PluginCallerTimerRunnable/]: Sending ConfigManager: jei:debug...
 [04июн.2026 15:58:01.333] [modloading-worker-0/DEBUG] [mezz.jei.library.load.PluginCallerTimerRunnable/]: Sending ConfigManager: jei:gui...
 [04июн.2026 15:58:01.333] [modloading-worker-0/DEBUG] [mezz.jei.library.load.PluginCallerTimerRunnable/]: Sending ConfigManager: jei:forge_gui...
@@ -534,4 +534,4 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [04июн.2026 15:58:01.781] [main/DEBUG] [net.minecraftforge.registries.GameData/REGISTRIES]: Holder lookups applied: minecraft:worldgen/biome
 [04июн.2026 15:58:02.052] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/Asus/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.3.0_mapped_official_1.20.1/forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar%23191!/assets/.mcassetsroot' uses unexpected schema
 [04июн.2026 15:58:02.053] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/Asus/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.3.0_mapped_official_1.20.1/forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar%23191!/data/.mcassetsroot' uses unexpected schema
-[04июн.2026 15:58:02.362] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: assembly_expansion
+[04июн.2026 15:58:02.362] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: nuclearisticcore

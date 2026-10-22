@@ -1,6 +1,6 @@
 {
   "values": [
-    "assembly_expansion:gasoline",
-    "assembly_expansion:gasoline_flowing"
+    "nuclearisticcore:gasoline",
+    "nuclearisticcore:gasoline_flowing"
   ]
 }

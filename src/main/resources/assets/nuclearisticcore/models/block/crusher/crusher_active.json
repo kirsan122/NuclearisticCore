@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "nuclearisticcore:block/crusher/crusher_top",
+    "up": "nuclearisticcore:block/crusher/crusher_top",
+    "down": "nuclearisticcore:block/crusher/crusher_bottom",
+    "north": "nuclearisticcore:block/crusher/crusher_front_active",
+    "south": "nuclearisticcore:block/crusher/crusher_back",
+    "east": "nuclearisticcore:block/crusher/crusher_side",
+    "west": "nuclearisticcore:block/crusher/crusher_side"
+  }
+}

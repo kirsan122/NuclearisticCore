@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 160,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "nuclearisticcore:raw_rubber"
+  },
+  "result": "nuclearisticcore:rubber"
+}

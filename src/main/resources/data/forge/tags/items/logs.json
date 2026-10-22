@@ -1,8 +1,8 @@
 {
   "values": [
-    "assembly_expansion:hevea_log",
-    "assembly_expansion:hevea_wood",
-    "assembly_expansion:stripped_hevea_log",
-    "assembly_expansion:stripped_hevea_wood"
+    "nuclearisticcore:hevea_log",
+    "nuclearisticcore:hevea_wood",
+    "nuclearisticcore:stripped_hevea_log",
+    "nuclearisticcore:stripped_hevea_wood"
   ]
 }

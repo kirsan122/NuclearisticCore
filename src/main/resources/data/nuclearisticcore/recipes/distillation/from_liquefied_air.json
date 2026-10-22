@@ -1,0 +1,11 @@
+{
+  "type": "nuclearisticcore:distillation",
+  "input": {
+    "fluid": "nuclearisticcore:liquefied_air",
+    "amount": 1
+  },
+  "outputs": {
+    "output_0": { "fluid": "nuclearisticcore:nitrogen", "amount": 546 },
+    "output_1": { "fluid": "nuclearisticcore:oxygen", "amount": 147 }
+  }
+}

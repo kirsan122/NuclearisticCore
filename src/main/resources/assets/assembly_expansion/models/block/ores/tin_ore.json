@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "assembly_expansion:block/ores/tin_ore"
-  }
-}

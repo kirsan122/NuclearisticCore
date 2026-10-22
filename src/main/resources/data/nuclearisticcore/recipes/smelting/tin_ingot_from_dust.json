@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.1,
+  "group": "nuclearisticcore:tin_ingot",
+  "ingredient": {
+    "item": "nuclearisticcore:tin_dust"
+  },
+  "result": "nuclearisticcore:tin_ingot"
+}

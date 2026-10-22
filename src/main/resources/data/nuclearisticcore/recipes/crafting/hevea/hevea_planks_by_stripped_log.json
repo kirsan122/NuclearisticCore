@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "planks",
+  "ingredients": [
+    {
+      "item": "nuclearisticcore:stripped_hevea_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearisticcore:hevea_planks"
+  }
+}

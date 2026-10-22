@@ -1,0 +1,7 @@
+{
+  "parent": "nuclearisticcore:block/cables/side/insulated_cable_side",
+  "textures": {
+    "main": "nuclearisticcore:block/cables/copper_cable",
+    "rubber": "nuclearisticcore:block/cables/rubber_on_cable"
+  }
+}

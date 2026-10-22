@@ -1,0 +1,13 @@
+{
+  "type": "nuclearisticcore:sintering",
+  "base": {
+    "tag": "forge:ingots/iron"
+  },
+  "infusor": {
+    "tag": "forge:dusts/coal",
+    "count": 2
+  },
+  "result": {
+    "item": "nuclearisticcore:steel_dust"
+  }
+}
