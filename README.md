@@ -1,7 +1,11 @@
-####### VERY IMPORTANT !
-This is my first time on GitHub, so I really messed up the commits. But I'll fix everything.
+# Nuclearistic Core
 
-# Assembly Expansion
+# 🚨 IMPORTANT: Rebranding Announcement / Переименование мода! 🚨
+
+Attention, everyone! The mod **"Assembly Expansion"** has been officially rebranded to **"Nuclearistic Core"**. 
+I decided to rename the mod because I believe the new name fits the mod and its core concept more accurately. The project is under active development, and all future updates will be released under the new name **Nuclearistic Core**. 
+
+*Note for players: If you are upgrading from old alpha versions, please back up your worlds, as the Mod ID change will remove items from existing saves.*
 
 Welcome to the official repository for **Assembly Expansion**, a Minecraft mod developed by **kirsan122**. This project serves as a key piece of my personal portfolio (Pet-project) to demonstrate my practical programming and software architecture skills.
 
