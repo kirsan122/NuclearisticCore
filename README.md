@@ -1,6 +1,6 @@
 # Nuclearistic Core
 
-# 🚨 IMPORTANT: Rebranding Announcement / Переименование мода! 🚨
+# 🚨 IMPORTANT: Rebranding Announcement! 🚨
 
 Attention, everyone! The mod **"Assembly Expansion"** has been officially rebranded to **"Nuclearistic Core"**. 
 I decided to rename the mod because I believe the new name fits the mod and its core concept more accurately. The project is under active development, and all future updates will be released under the new name **Nuclearistic Core**. 
