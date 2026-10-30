@@ -20,16 +20,9 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class MechanicalSintererMenu extends UniversalMenu<MechanicalSintererBlockEntity> {
-
-    private static final int UPGRADE_SLOT_START = 4;
-    private static final int PLAYER_INV_START = 8;
-
-
-
     public MechanicalSintererMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(11));
     }
-
 
     public MechanicalSintererMenu(int containerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(NCMenues.MECHANICAL_SINTERER_MENU.get(), containerId, (MechanicalSintererBlockEntity) entity, data);
@@ -49,67 +42,7 @@ public class MechanicalSintererMenu extends UniversalMenu<MechanicalSintererBloc
             public boolean mayPlace(ItemStack stack) { return stack.getCapability(ForgeCapabilities.ENERGY).isPresent(); }
         });
 
-        GuiData.layoutPlayerInventory(inv, 8, 84, this::addSlot);
-    }
-
-    @Override
-    public @NotNull ItemStack quickMoveStack(Player playerIn, int index) {
-        Slot sourceSlot = slots.get(index);
-        if (!sourceSlot.hasItem()) return ItemStack.EMPTY;
-
-        ItemStack sourceStack = sourceSlot.getItem();
-        ItemStack copyStack = sourceStack.copy();
-
-
-        if (index < PLAYER_INV_START) {
-
-            if (!moveItemStackTo(sourceStack, PLAYER_INV_START, PLAYER_INV_START + 36, true)) {
-                return ItemStack.EMPTY;
-            }
-        }
-
-        else {
-
-            if (sourceStack.is(NCTags.Items.ALL_UPGRADES)) {
-
-                if (this.isUpgradeTabFullyOpen) {
-
-                    if (!moveItemStackTo(sourceStack, UPGRADE_SLOT_START, PLAYER_INV_START, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-
-                    return ItemStack.EMPTY;
-                }
-            }
-
-            else {
-
-                if (sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent()) {
-
-
-                    if (!moveItemStackTo(sourceStack, 3, 4, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-
-                    if (!moveItemStackTo(sourceStack, 0, 1, false)) {
-
-                        if (!moveItemStackTo(sourceStack, 1, 2, false)) {
-                            return ItemStack.EMPTY;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (sourceStack.isEmpty()) {
-            sourceSlot.setByPlayer(ItemStack.EMPTY);
-        } else {
-            sourceSlot.setChanged();
-        }
-
-        return copyStack;
+        layoutPlayerInventory(inv, 8, 84, this::addSlot);
     }
 
     @Override

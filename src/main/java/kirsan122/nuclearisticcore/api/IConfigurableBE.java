@@ -7,6 +7,10 @@ public interface IConfigurableBE {
     void setDeviceSideMode(int sideId, int mode);
 
     void refreshCaps();
+
+    default boolean isSideConfigurable() {
+        return true;
+    }
 }
 
 

@@ -362,6 +362,7 @@ public class NCBlockItems {
                     super.appendHoverText(stack, level, tooltip, flag);
                 }
             });
+
     public static final RegistryObject<Item> ELECTROLYZER_ITEM = ITEMS.register("electrolyzer",
             () -> new BlockItem(NCMachineBlocks.ELECTROLYZER.get(), new Item.Properties()) {
                 @Override
@@ -466,16 +467,124 @@ public class NCBlockItems {
                     super.appendHoverText(stack, level, tooltip, flag);
                 }
             });
-    public static final RegistryObject<Item> AIR_COLLECTOR_ITEM = register(NCMachineBlocks.AIR_COLLECTOR);
+
+    public static final RegistryObject<Item> AIR_COLLECTOR_ITEM = ITEMS.register("air_collector",
+            () -> new BlockItem(NCMachineBlocks.AIR_COLLECTOR.get(), new Item.Properties()) {
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+                    if (Screen.hasControlDown()) {
+                        tooltip.add(Component.translatable("tooltip.nuclearisticcore.machines.air_collector"));
+
+                    } else if (Screen.hasShiftDown()) {
+                        int currentEnergy = 0;
+                        int baseMaxEnergy = 12000;
+                        int maxEnergy = baseMaxEnergy;
+
+                        String inventorySummary = "tooltip.nuclearisticcore.machines.inv.empty";
+                        CompoundTag mainTag = stack.getTag();
+
+
+                        List<Component> fluidTooltips = new ArrayList<>();
+
+                        if (mainTag != null && mainTag.contains("BlockEntityTag")) {
+                            CompoundTag beTag = mainTag.getCompound("BlockEntityTag");
+
+
+                            if (beTag.contains("energy")) {
+                                CompoundTag energyTag = beTag.getCompound("energy");
+                                if (energyTag.contains("energy")) {
+                                    currentEnergy = energyTag.getInt("energy");
+                                }
+                            }
+
+
+                            CompoundTag upgradeSlotsTag = beTag.contains("upgrade_slots") ? beTag.getCompound("upgrade_slots") : null;
+                            maxEnergy = EnergyUpgradeItem.getMaxEnergy(baseMaxEnergy, upgradeSlotsTag);
+
+
+                            if (beTag.contains("inventory")) {
+                                CompoundTag invTag = beTag.getCompound("inventory");
+                                if (invTag.contains("Items", Tag.TAG_LIST)) {
+                                    ListTag itemsList = invTag.getList("Items", Tag.TAG_COMPOUND);
+                                    List<String> foundItems = new ArrayList<>();
+
+                                    for (int i = 0; i < itemsList.size(); i++) {
+                                        CompoundTag itemTag = itemsList.getCompound(i);
+                                        ItemStack itemInSlot = ItemStack.of(itemTag);
+
+                                        if (!itemInSlot.isEmpty()) {
+                                            String itemName = itemInSlot.getHoverName().getString();
+                                            int count = itemInSlot.getCount();
+                                            foundItems.add(itemName + " x" + count);
+                                        }
+                                    }
+
+                                    if (!foundItems.isEmpty()) {
+                                        inventorySummary = String.join(", ", foundItems);
+                                    }
+                                }
+                            }
+
+
+
+                            if (beTag.contains("inputTank")) {
+                                FluidStack fluid = FluidStack.loadFluidStackFromNBT(beTag.getCompound("inputTank"));
+                                if (!fluid.isEmpty()) {
+                                    fluidTooltips.add(Component.literal("  • ").withStyle(ChatFormatting.GRAY)
+                                            .append(fluid.getDisplayName().copy().withStyle(ChatFormatting.AQUA))
+                                            .append(Component.literal(": " + fluid.getAmount() + " mB").withStyle(ChatFormatting.WHITE)));
+                                }
+                            }
+
+                            for (int i = 1; i <= 2; i++) {
+                                if (beTag.contains("Tank" + i)) {
+                                    FluidStack fluid = FluidStack.loadFluidStackFromNBT(beTag.getCompound("Tank" + i));
+                                    if (!fluid.isEmpty()) {
+                                        fluidTooltips.add(Component.literal("  • ").withStyle(ChatFormatting.GRAY)
+                                                .append(fluid.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA))
+                                                .append(Component.literal(": " + fluid.getAmount() + " mB").withStyle(ChatFormatting.WHITE)));
+                                    }
+                                }
+                            }
+                        }
+
+
+                        tooltip.add(Component.translatable("tooltip.nuclearisticcore.battery_info.energy", currentEnergy, maxEnergy));
+
+
+                        if (!fluidTooltips.isEmpty()) {
+                            tooltip.addAll(fluidTooltips);
+                        }
+
+
+                        if (inventorySummary.equals("tooltip.nuclearisticcore.machines.inv.empty")) {
+                            tooltip.add(Component.translatable("tooltip.nuclearisticcore.machines.info.inv")
+                                    .append(Component.translatable(inventorySummary)));
+                        } else {
+                            tooltip.add(Component.translatable("tooltip.nuclearisticcore.machines.info.inv")
+                                    .append(Component.literal(inventorySummary)));
+                        }
+
+                    } else {
+                        tooltip.add(Component.translatable("tooltip.nuclearisticcore.universal.shift"));
+                        tooltip.add(Component.translatable("tooltip.nuclearisticcore.universal.ctrl"));
+                    }
+                    super.appendHoverText(stack, level, tooltip, flag);
+                }
+            });
 
     public static final RegistryObject<Item> FLUID_COOLER_ITEM = register(NCMachineBlocks.FLUID_COOLER);
+
+    public static final RegistryObject<Item> CATALYTIC_REFORMER_ITEM = register(NCMachineBlocks.CATALYTIC_REFORMER);
 
     public static final RegistryObject<Item> FLUID_TANK_ITEM = ITEMS.register("fluid_tank",
             () -> new FluidTankBlockItem(NCMachineBlocks.FLUID_TANK.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> CHEMICAL_MIXER_ITEM = ITEMS.register("chemical_mixer",
+            () -> new BlockItem(NCMachineBlocks.CHEMICAL_MIXER.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> COPPER_CABLE_ITEM = register(NCBlocks.COPPER_CABLE);
     public static final RegistryObject<Item> INSULATED_COPPER_CABLE = register(NCBlocks.INSULATED_COPPER_CABLE);
-
     public static final RegistryObject<Item> HEVEA_LOG_ITEM = register(NCBlocks.HEVEA_LOG);
     public static final RegistryObject<Item> HEVEA_PLANKS_ITEM = register(NCBlocks.HEVEA_PLANKS);
     public static final RegistryObject<Item> HEVEA_FENCE_ITEM = register(NCBlocks.HEVEA_FENCE);

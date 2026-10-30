@@ -1,0 +1,9 @@
+{
+  "loader": "forge:obj",
+  "model": "nuclearisticcore:block/catalytic_reformer/catalytic_reformer.obj",
+  "automatic_sets": true,
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "missing": "minecraft:block/iron_block"
+  }
+}

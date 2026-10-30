@@ -1,4 +1,4 @@
-package kirsan122.nuclearisticcore.client.gui.inventory;
+package kirsan122.nuclearisticcore.client.gui.screens;
 
 public interface IProgressGetter {
     float getUpgradeAnimationProgress();

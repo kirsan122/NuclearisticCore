@@ -19,15 +19,12 @@ public class DynamicUpgradeSlot extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-
         return stack.is(NCTags.Items.ALL_UPGRADES);
     }
+
     @Override
     public boolean isActive() {
-
-
         return this.isTabOpen.getAsBoolean();
     }
-
 }
 

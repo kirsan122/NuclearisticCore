@@ -5,6 +5,7 @@ import kirsan122.nuclearisticcore.client.gui.GuiData;
 import kirsan122.nuclearisticcore.common.recipe.CrusherRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -19,9 +20,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @SuppressWarnings("removal")
 public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(NuclearisticCore.MOD_ID, "crushing");
@@ -39,10 +42,16 @@ public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
         this.arrow = helper.createAnimatedDrawable(staticArrow, 180, IDrawableAnimated.StartDirection.LEFT, false);
     }
 
-    @Override public RecipeType<CrusherRecipe> getRecipeType() { return TYPE; }
-    @Override public Component getTitle() { return Component.translatable("jei.nuclearisticcore.crushing"); }
-    @Override public IDrawable getBackground() { return this.background; }
-    @Override public IDrawable getIcon() { return this.icon; }
+    @Override
+    public RecipeType<CrusherRecipe> getRecipeType() { return TYPE; }
+    @Override
+    public @Nullable IDrawable getBackground() {
+        return background;
+    }
+    @Override
+    public Component getTitle() { return Component.translatable("jei.nuclearisticcore.crushing"); }
+    @Override
+    public IDrawable getIcon() { return icon; }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CrusherRecipe recipe, IFocusGroup focuses) {
@@ -54,7 +63,7 @@ public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 109, 46)
                 .addItemStack(recipe.getResultSecond())
-                .addTooltipCallback((recipeSlotView, tooltip) -> {
+                .addRichTooltipCallback((recipeSlotView, tooltip) -> {
                     if (!recipe.getResultSecond().isEmpty()) {
                         int percentChance = (int) (recipe.getSecondChance() * 100);
 
@@ -64,38 +73,31 @@ public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        this.arrow.draw(guiGraphics, 72, 22);
-
+    public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        arrow.draw(graphics, 72, 22);
 
         int totalEnergyNeeded = recipe.getEnergyConsumption() * 200;
 
-
-
         int barHeight = (int) ((long) totalEnergyNeeded * 50 / 10000);
-
 
         barHeight = Math.min(barHeight, 50);
 
         if (barHeight > 0) {
 
             int yOffset = 50 - barHeight;
-            guiGraphics.blit(GuiData.ENERGY_LINE, 155, 5 + yOffset, 0, yOffset, 5, barHeight, 5, 50);
+            graphics.blit(GuiData.ENERGY_LINE, 155, 5 + yOffset, 0, yOffset, 5, barHeight, 5, 50);
         }
     }
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
-        List<Component> tooltips = new ArrayList<>();
-
+    public void getTooltip(ITooltipBuilder tooltip, CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (mouseX >= 154 && mouseX <= 160 && mouseY >= 4 && mouseY <= 55) {
             int energyPerTick = recipe.getEnergyConsumption();
             int totalEnergy = energyPerTick * 200;
 
-            tooltips.add(Component.literal(energyPerTick + " FE/t"));
-            tooltips.add(Component.literal(totalEnergy + " FE"));
+            tooltip.add(Component.literal(energyPerTick + " FE/t"));
+            tooltip.add(Component.literal(totalEnergy + " FE"));
         }
-
-        return tooltips;
     }
+
 }

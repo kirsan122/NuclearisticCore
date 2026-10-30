@@ -1,0 +1,12 @@
+{
+  "type": "nuclearisticcore:distillation",
+  "input": {
+    "fluid": "nuclearisticcore:associated_petroleum_gas",
+    "amount": 100
+  },
+  "outputs": {
+    "output_0": { "fluid": "nuclearisticcore:methane", "amount": 65 },
+    "output_1": { "fluid": "nuclearisticcore:ethane", "amount": 14 },
+    "output_2": { "fluid": "nuclearisticcore:propane", "amount": 21 }
+  }
+}

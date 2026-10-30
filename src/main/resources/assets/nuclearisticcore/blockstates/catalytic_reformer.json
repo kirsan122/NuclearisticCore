@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearisticcore:block/catalytic_reformer/catalytic_reformer"
+    }
+  }
+}

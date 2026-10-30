@@ -37,9 +37,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuProvider {
+public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProvider {
     private final int maxEnergyStorage = 10000;
-    private boolean hasValidBatteryInSlot = false;
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 180;
@@ -96,11 +95,13 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
         };
     }
 
-
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
-            onInventorySlotChanged(slot);
+            setChanged();
+            if (slot != 1) {
+                inventoryChanged = true;
+            }
         }
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
@@ -116,27 +117,6 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
         return maxProgress;
     }
 
-    private void onInventorySlotChanged(int slot) {
-
-        this.inventoryChanged = true;
-
-
-        setChanged();
-
-
-        if (slot == 1) {
-            ItemStack stack = this.itemHandler.getStackInSlot(1);
-            if (!stack.isEmpty()) {
-                this.hasValidBatteryInSlot = stack.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY)
-                        .map(net.minecraftforge.energy.IEnergyStorage::canExtract)
-                        .orElse(false);
-            } else {
-                this.hasValidBatteryInSlot = false;
-            }
-        }
-    }
-
-
     private final DynamicEnergyStorage energyStorage = new DynamicEnergyStorage(maxEnergyStorage, 1000, 1000) {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
@@ -149,56 +129,18 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
         }
     };
 
-
     private LazyOptional<IItemHandler> itemHandlerLazyOptional = LazyOptional.of(() -> itemHandler);
-    private LazyOptional<IEnergyStorage> energyStorageLazyOptional = LazyOptional.of(this::createEnergyStorageWrapper);
-
-
-    private IEnergyStorage createEnergyStorageWrapper() {
-        return new IEnergyStorage() {
-            @Override
-            public int receiveEnergy(int maxReceive, boolean simulate) {
-                return energyStorage.receiveEnergy(maxReceive, simulate);
-            }
-
-            @Override
-            public int extractEnergy(int maxExtract, boolean simulate) {
-                return 0;
-            }
-
-            @Override
-            public int getEnergyStored() {
-                return energyStorage.getEnergyStored();
-            }
-
-            @Override
-            public int getMaxEnergyStored() {
-                return energyStorage.getMaxEnergyStored();
-            }
-
-            @Override
-            public boolean canExtract() {
-                return false;
-            }
-
-            @Override
-            public boolean canReceive() {
-                return true;
-            }
-        };
-    }
+    private LazyOptional<IEnergyStorage> energyStorageLazyOptional = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
 
     @Override
     public void refreshCaps() {
-
         this.itemHandlerLazyOptional.invalidate();
         this.energyStorageLazyOptional.invalidate();
 
 
         this.itemHandlerLazyOptional = LazyOptional.of(() -> itemHandler);
-        this.energyStorageLazyOptional = LazyOptional.of(this::createEnergyStorageWrapper);
+        this.energyStorageLazyOptional = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
     }
-
 
     public IItemHandler getItemHandler() {
         return itemHandler;
@@ -217,12 +159,8 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
 
     public static void tick(Level level, BlockPos pos, BlockState state, CrusherBlockEntity entity) {
         if (level.isClientSide()) return;
-        if (!state.is(NCMachineBlocks.CRUSHER.get())) return;
 
-        if (entity.hasValidBatteryInSlot) {
-            entity.chargeFromEnergySlot();
-        }
-
+        chargeFromEnergySlot(entity.energyStorage, entity.itemHandler, 1, entity);
 
         entity.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(entity));
 
@@ -275,20 +213,16 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
     private Optional<CrusherRecipe> getCurrentRecipe() {
         assert this.level != null;
 
-
         if (!this.inventoryChanged && this.cachedRecipe != null) {
             return Optional.of(this.cachedRecipe);
         }
-
 
         this.inventoryWrapper.setItem(0, this.itemHandler.getStackInSlot(0));
         this.inventoryWrapper.setItem(1, this.itemHandler.getStackInSlot(1));
         this.inventoryWrapper.setItem(2, this.itemHandler.getStackInSlot(2));
         this.inventoryWrapper.setItem(3, this.itemHandler.getStackInSlot(3));
 
-
         Optional<CrusherRecipe> recipeMatch = this.level.getRecipeManager().getRecipeFor(NCRecipes.CRUSHER_RECIPE_TYPE.get(), this.inventoryWrapper, this.level);
-
 
         this.cachedRecipe = recipeMatch.orElse(null);
         this.inventoryChanged = false;
@@ -297,7 +231,6 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
     }
 
     private boolean canInsertIntoOutputSlot(CrusherRecipe recipe) {
-
         ItemStack mainOut = this.itemHandler.getStackInSlot(2);
         boolean canMain = mainOut.isEmpty() || (ItemStack.isSameItemSameTags(mainOut, recipe.getResultMain()) &&
                 (mainOut.getCount() + recipe.getResultMain().getCount() <= mainOut.getMaxStackSize()));
@@ -317,10 +250,7 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
         assert this.level != null;
 
         this.itemHandler.extractItem(0, 1, false);
-
-
         this.itemHandler.insertItem(2, recipe.getResultMain().copy(), false);
-
 
         if (!recipe.getResultSecond().isEmpty()) {
             if (this.level.random.nextFloat() <= recipe.getSecondChance()) {
@@ -328,26 +258,23 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
             }
         }
 
-
         this.inventoryChanged = true;
     }
 
-
+    @Override
+    public int getMaxEnergy() {
+        return maxEnergyStorage;
+    }
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable net.minecraft.core.Direction side) {
-
-
         Direction blockFacing = this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         Direction relativeSide = GuiData.getRelativeSide(blockFacing, side);
-
-
 
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (side == null) {
                 return itemHandlerLazyOptional.cast();
             }
-
 
             int sideId = relativeSide.get3DDataValue();
             int sideMode = this.sideConfigModes[sideId];
@@ -369,28 +296,20 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
 
             return LazyOptional.of(() -> new RangedWrapper(itemHandler, 1, 2)).cast();
         }
-
-
         if (cap == ForgeCapabilities.ENERGY) {
             if (side != null) {
                 int sideId = relativeSide.get3DDataValue();
                 int sideMode = this.sideConfigModes[sideId];
 
-
-
                 if (sideMode == 0 || sideMode == 2) {
                     return net.minecraftforge.common.util.LazyOptional.empty();
                 }
-
-
                 if (sideMode == 1) {
                     return energyStorageLazyOptional.cast();
                 }
             }
             return energyStorageLazyOptional.cast();
         }
-
-
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (side == null) return net.minecraftforge.common.util.LazyOptional.empty();
 
@@ -411,21 +330,6 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
             return LazyOptional.empty();
         }
 
-        String capName = cap.getName();
-        if (capName.contains("IGasHandler") || capName.contains("IInfusionHandler") || capName.contains("IPigmentHandler") || capName.contains("ISlurryHandler")) {
-            if (side != null) {
-                int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
-                if (sideMode == 0) return net.minecraftforge.common.util.LazyOptional.empty();
-            }
-            return net.minecraftforge.common.util.LazyOptional.empty();
-        }
-
-        if (capName.contains("IStrictEnergyHandler")) {
-            return net.minecraftforge.common.util.LazyOptional.empty();
-        }
-
-
         return super.getCapability(cap, side);
     }
 
@@ -435,36 +339,6 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
         super.invalidateCaps();
         itemHandlerLazyOptional.invalidate();
         energyStorageLazyOptional.invalidate();
-    }
-
-    private void chargeFromEnergySlot() {
-        int spaceLeft = this.energyStorage.getMaxEnergyStored() - this.energyStorage.getEnergyStored();
-
-
-        if (spaceLeft <= 0) return;
-
-        ItemStack batteryStack = this.itemHandler.getStackInSlot(1);
-
-
-        batteryStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(batteryEnergy -> {
-            int maxTransfer = Math.min(spaceLeft, 1000);
-            int extracted = batteryEnergy.extractEnergy(maxTransfer, true);
-
-            if (extracted > 0) {
-                int accepted = this.energyStorage.receiveEnergy(extracted, false);
-                batteryEnergy.extractEnergy(accepted, false);
-                this.setChanged();
-            } else {
-
-
-                this.hasValidBatteryInSlot = false;
-            }
-        });
-    }
-
-    @Override
-    public int getMaxEnergy() {
-        return maxEnergyStorage;
     }
 
     @Override
@@ -482,9 +356,5 @@ public class CrusherBlockEntity extends ConfigurableBlockEntity implements MenuP
         this.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
         this.energyStorage.setEnergyDirect(tag.getInt("energy"));
         this.progress = tag.getInt("progress");
-        ItemStack stack = this.itemHandler.getStackInSlot(1);
-        this.hasValidBatteryInSlot = !stack.isEmpty() && stack.getCapability(ForgeCapabilities.ENERGY)
-                .map(IEnergyStorage::canExtract)
-                .orElse(false);
     }
 }

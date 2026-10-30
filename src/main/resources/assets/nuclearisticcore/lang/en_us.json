@@ -37,6 +37,7 @@
   "tooltip.nuclearisticcore.battery_info.energy": "§7Stored: %s / %s FE",
   "tooltip.nuclearisticcore.battery_info.maxExtract": "Max output: %s FE/t",
   "tooltip.screen.nuclearisticcore.distillation_column": "Distillation Column",
+  "tooltip.nuclearisticcore.bakelite": "Seems like the real thing",
   "jei.nuclearisticcore.chance": "Chance: %s%",
   "jei.nuclearisticcore.generator_fuel": "Generator Fuel",
   "jei.nuclearisticcore.crushing": "Crushing",
@@ -45,7 +46,7 @@
   "jei.nuclearisticcore.electrolysis": "Electrolysis",
   "jei.nuclearisticcore.tooltip.generator_fuel": "Will generate: %s FE",
   "jei.nuclearisticcore.collecting_air": "Air can be obtained from the 'Air Collector' by supplying it with energy. The mechanism will extract 100 mB of air from the atmosphere every second.",
-
+  "jei.nuclearisticcore.catalytic_reforming": "Catalytic Reforming",
 
 
   "tooltip.nuclearisticcore.machines.generator": "A great starting power source! Generates energy from anything that burns, such as coal.",
@@ -120,6 +121,7 @@
   "block.nuclearisticcore.electrolyzer": "Electrolyzer",
   "block.nuclearisticcore.air_collector": "Air Collector",
   "block.nuclearisticcore.fluid_cooler": "Fluid Cooler",
+  "block.nuclearisticcore.catalytic_reformer": "Catalytic Reformer",
 
   "item.nuclearisticcore.raw_tin": "Raw Tin",
   "item.nuclearisticcore.tin_ingot": "Tin Ingot",
@@ -152,12 +154,11 @@
   "item.nuclearisticcore.raw_uranium": "Raw Uranium",
   "item.nuclearisticcore.copper_wire": "Copper Wire",
   "item.nuclearisticcore.heat_exchanger": "Heat Exchanger",
-
+  "item.nuclearisticcore.tin_catalyst": "Tin Catalyst",
   "item.nuclearisticcore.latex_disc": "Latex Disc",
   "item.nuclearisticcore.raw_rubber": "Raw Rubber",
   "item.nuclearisticcore.purified_rubber": "Purified Rubber",
   "item.nuclearisticcore.rubber": "Rubber",
-
   "item.nuclearisticcore.engineering_hammer": "Engineer's Hammer",
   "item.nuclearisticcore.battery": "Battery",
   "item.nuclearisticcore.latex_bucket": "Latex Bucket",
@@ -182,8 +183,10 @@
   "item.nuclearisticcore.anti_radiation_boots": "Anti-radiation Boots",
   "item.nuclearisticcore.wire_cutters": "Wire Cutters",
   "item.nuclearisticcore.fan": "Fan",
-
-
+  "item.nuclearisticcore.bakelite": "Bakelite",
+  "item.nuclearisticcore.iron_shell": "Iron Shell",
+  "item.nuclearisticcore.steel_shell": "Steel Shell",
+  "item.nuclearisticcore.tin_shell": "Tin Shell",
   "item.nuclearisticcore.hevea_boat": "Hevea Boat",
   "item.nuclearisticcore.hevea_chest_boat": "Hevea Boat with Chest"
 }

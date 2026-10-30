@@ -2,9 +2,10 @@ package kirsan122.nuclearisticcore.client.jei;
 
 import kirsan122.nuclearisticcore.NuclearisticCore;
 import kirsan122.nuclearisticcore.client.gui.GuiData;
-import kirsan122.nuclearisticcore.client.gui.inventory.FluidCoolerScreen;
+import kirsan122.nuclearisticcore.client.gui.screens.FluidCoolerScreen;
 import kirsan122.nuclearisticcore.common.blockEntity.machines.FluidCoolerBlockEntity;
 import kirsan122.nuclearisticcore.common.recipe.FluidCoolerRecipe;
+import kirsan122.nuclearisticcore.common.util.RenderUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -26,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -39,8 +41,6 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
     private final IDrawable icon;
 
     public FluidCoolerRecipeCategory(IGuiHelper helper, ItemStack icon) {
-
-
         this.background = helper.createDrawable(TEXTURE, 50, 15, 76, 58);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, icon);
     }
@@ -51,13 +51,13 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
     }
 
     @Override
-    public Component getTitle() {
-        return Component.translatable("jei.nuclearisticcore.fluid_cooling");
+    public @Nullable IDrawable getBackground() {
+        return background;
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public Component getTitle() {
+        return Component.translatable("jei.nuclearisticcore.fluid_cooling");
     }
 
     @Override
@@ -67,9 +67,8 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
 
     @Override
     public void draw(FluidCoolerRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
-        graphics.blit(GuiData.ELECTROLYZER_DIVISIONS, 3, 6, 0, 0, 16, 45, 16, 45);
-
-        graphics.blit(GuiData.ELECTROLYZER_DIVISIONS, 57, 6, 0, 0, 16, 45, 16, 45);
+        RenderUtils.drawTankDivisions(graphics, 3, 6);
+        RenderUtils.drawTankDivisions(graphics, 57, 6);
     }
 
     @Override
@@ -88,7 +87,7 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
         }
     }
 
-    public static class FluidCoolerGuiHandler implements IGuiContainerHandler<FluidCoolerScreen> {
+    public static class GuiHandler implements IGuiContainerHandler<FluidCoolerScreen> {
 
         @Override
         public @NotNull Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(FluidCoolerScreen screen, double mouseX, double mouseY) {
@@ -101,7 +100,7 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
             int y = (int) (mouseY - guiTop);
 
 
-            if (isMouseOver(x, y, 53, 18, 16, 52)) {
+            if (isMouseOver(x, y, 53)) {
                 FluidStack fluid = blockEntity.getTankCapability(0).map(t -> t.getFluidInTank(0)).orElse(FluidStack.EMPTY);
                 if (!fluid.isEmpty()) {
                     Rect2i area = new Rect2i(guiLeft + 8, guiTop + 13, 16, 52);
@@ -110,7 +109,7 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
             }
 
 
-            if (isMouseOver(x, y, 107, 18, 16, 52)) {
+            if (isMouseOver(x, y, 107)) {
                 FluidStack fluid = blockEntity.getTankCapability(1).map(t -> t.getFluidInTank(0)).orElse(FluidStack.EMPTY);
                 if (!fluid.isEmpty()) {
                     Rect2i area = new Rect2i(guiLeft + 107, guiTop + 18, 16, 52);
@@ -122,29 +121,25 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
             return Optional.empty();
         }
 
-        private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
-            return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+        private boolean isMouseOver(int mouseX, int mouseY, int x) {
+            return mouseX >= x && mouseX < x + 16 && mouseY >= 18 && mouseY < 18 + 52;
         }
 
         private <T> IClickableIngredient<T> createClickableIngredient(IIngredientType<T> type, T value, Rect2i area) {
             return new IClickableIngredient<T>() {
                 @Override
-                public @NotNull ITypedIngredient<T> getTypedIngredient() {
+                public ITypedIngredient<T> getTypedIngredient() {
+
                     return new ITypedIngredient<T>() {
                         @Override
-                        public @NotNull IIngredientType<T> getType() {
-                            return type;
-                        }
-
+                        public IIngredientType<T> getType() { return type; }
                         @Override
-                        public @NotNull T getIngredient() {
-                            return value;
-                        }
+                        public T getIngredient() { return value; }
                     };
                 }
 
                 @Override
-                public @NotNull Rect2i getArea() {
+                public Rect2i getArea() {
                     return area;
                 }
             };

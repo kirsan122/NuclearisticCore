@@ -4,11 +4,11 @@ import kirsan122.nuclearisticcore.api.RedstoneModes;
 import kirsan122.nuclearisticcore.client.gui.GuiData;
 import kirsan122.nuclearisticcore.common.block.machines.ElectricFurnaceBlock;
 import kirsan122.nuclearisticcore.common.energy.DynamicEnergyStorage;
-import kirsan122.nuclearisticcore.common.item.upgrades.EnergyUpgradeItem;
-import kirsan122.nuclearisticcore.common.item.upgrades.SpeedUpgradeItem;
-import kirsan122.nuclearisticcore.common.inventory.ElectricFurnaceMenu;
 import kirsan122.nuclearisticcore.common.init.NCBlockEntities;
 import kirsan122.nuclearisticcore.common.init.NCMachineBlocks;
+import kirsan122.nuclearisticcore.common.inventory.ElectricFurnaceMenu;
+import kirsan122.nuclearisticcore.common.item.upgrades.EnergyUpgradeItem;
+import kirsan122.nuclearisticcore.common.item.upgrades.SpeedUpgradeItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,8 +36,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implements MenuProvider {
-    private boolean hasValidBatteryInSlot = false;
+public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements MenuProvider {
+    private final int maxEnergyStorage = 10000;
+    protected final ContainerData data;
+    private int progress = 0;
+    private int maxProgress = 200;
     private final SimpleContainer inventoryWrapper = new SimpleContainer(3);
     private SmeltingRecipe cachedRecipe = null;
     public boolean inventoryChanged = true;
@@ -45,7 +48,10 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
     private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
         @Override
         protected void onContentsChanged(int slot) {
-            onInventorySlotChanged(slot);
+            setChanged();
+            if (slot != 1) {
+                inventoryChanged = true;
+            }
         }
 
         @Override
@@ -54,7 +60,7 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
         }
     };
 
-    private final DynamicEnergyStorage energyStorage = new DynamicEnergyStorage(10000, 1000, 0) {
+    private final DynamicEnergyStorage energyStorage = new DynamicEnergyStorage(maxEnergyStorage, 1000, 0) {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
 
@@ -71,45 +77,7 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
         }
     };
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
-    private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(this::createEnergyStorageWrapper);
-
-    private net.minecraftforge.energy.IEnergyStorage createEnergyStorageWrapper() {
-        return new net.minecraftforge.energy.IEnergyStorage() {
-            @Override
-            public int receiveEnergy(int maxReceive, boolean simulate) {
-                return energyStorage.receiveEnergy(maxReceive, simulate);
-            }
-
-            @Override
-            public int extractEnergy(int maxExtract, boolean simulate) {
-                return 0;
-            }
-
-            @Override
-            public int getEnergyStored() {
-                return energyStorage.getEnergyStored();
-            }
-
-            @Override
-            public int getMaxEnergyStored() {
-                return energyStorage.getMaxEnergyStored();
-            }
-
-            @Override
-            public boolean canExtract() {
-                return false;
-            }
-
-            @Override
-            public boolean canReceive() {
-                return true;
-            }
-        };
-    }
-
-    protected final ContainerData data;
-    private int progress = 0;
-    private int maxProgress = 200;
+    private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
 
     public ElectricFurnaceBlockEntity(BlockPos pos, BlockState state) {
         super(NCBlockEntities.ELECTRIC_FURNACE_BE.get(), pos, state);
@@ -155,6 +123,11 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
     }
 
     @Override
+    public int getMaxEnergy() {
+        return maxEnergyStorage;
+    }
+
+    @Override
     public Component getDisplayName() {
         return Component.translatable("block.nuclearisticcore.electric_furnace");
     }
@@ -166,34 +139,11 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
         return new ElectricFurnaceMenu(id, inventory, this, this.data);
     }
 
-    private void onInventorySlotChanged(int slot) {
-
-        this.inventoryChanged = true;
-
-
-        setChanged();
-
-
-        if (slot == 1) {
-            ItemStack stack = this.itemHandler.getStackInSlot(1);
-            if (!stack.isEmpty()) {
-                this.hasValidBatteryInSlot = stack.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY)
-                        .map(net.minecraftforge.energy.IEnergyStorage::canExtract)
-                        .orElse(false);
-            } else {
-                this.hasValidBatteryInSlot = false;
-            }
-        }
-    }
-
     public static void tick(Level level, BlockPos pos, BlockState state, ElectricFurnaceBlockEntity entity) {
         if (level.isClientSide()) return;
         if (!state.is(NCMachineBlocks.ELECTRIC_FURNACE.get())) return;
 
-        if (entity.hasValidBatteryInSlot) {
-            entity.chargeFromEnergySlot();
-        }
-
+        chargeFromEnergySlot(entity.energyStorage, entity.itemHandler, 1, entity);
 
         entity.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(entity));
 
@@ -240,32 +190,6 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
         if (state.getValue(ElectricFurnaceBlock.ACTIVE) != isCrafting) {
             level.setBlock(pos, state.setValue(ElectricFurnaceBlock.ACTIVE, isCrafting), 3);
         }
-    }
-
-
-    private void chargeFromEnergySlot() {
-        int spaceLeft = this.energyStorage.getMaxEnergyStored() - this.energyStorage.getEnergyStored();
-
-
-        if (spaceLeft <= 0) return;
-
-        ItemStack batteryStack = this.itemHandler.getStackInSlot(1);
-
-
-        batteryStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(batteryEnergy -> {
-            int maxTransfer = Math.min(spaceLeft, 1000);
-            int extracted = batteryEnergy.extractEnergy(maxTransfer, true);
-
-            if (extracted > 0) {
-                int accepted = this.energyStorage.receiveEnergy(extracted, false);
-                batteryEnergy.extractEnergy(accepted, false);
-                this.setChanged();
-            } else {
-
-
-                this.hasValidBatteryInSlot = false;
-            }
-        });
     }
 
     private Optional<SmeltingRecipe> getCurrentRecipe() {
@@ -327,7 +251,6 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
     }
 
 
-
     @Override
     public void saveAdditional(CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
@@ -340,9 +263,9 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
     public void load(CompoundTag tag) {
         super.load(tag);
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
-        this.energyStorage.receiveEnergy(tag.getInt("energy"), false);
-        this.progress = tag.getInt("progress");
-        this.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
+        energyStorage.receiveEnergy(tag.getInt("energy"), false);
+        progress = tag.getInt("progress");
+        energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
     }
 
     public IItemHandler getItemHandler() {
@@ -357,17 +280,12 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
     }
 
     public ItemStackHandler getInventory() {
-        return this.itemHandler;
-    }
-
-    @Override
-    public int getMaxEnergy() {
-        return this.data.get(3);
+        return itemHandler;
     }
 
     @Override
     public int getBaseProcessTime() {
-        return this.maxProgress;
+        return maxProgress;
     }
 
     @Override
@@ -376,7 +294,6 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
 
         Direction blockFacing = this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         Direction relativeSide = GuiData.getRelativeSide(blockFacing, side);
-
 
 
         if (cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER) {
@@ -411,7 +328,6 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
             if (side != null) {
                 int sideId = relativeSide.get3DDataValue();
                 int sideMode = this.sideConfigModes[sideId];
-
 
 
                 if (sideMode == 0 || sideMode == 2) {
@@ -462,19 +378,16 @@ public class ElectricFurnaceBlockEntity extends ConfigurableBlockEntity implemen
             return net.minecraftforge.common.util.LazyOptional.empty();
         }
 
-
         return super.getCapability(cap, side);
     }
 
     @Override
     public void refreshCaps() {
-
         this.lazyItemHandler.invalidate();
         this.lazyEnergyHandler.invalidate();
 
-
         this.lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        this.lazyEnergyHandler = LazyOptional.of(this::createEnergyStorageWrapper);
+        this.lazyEnergyHandler = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
     }
 
 }

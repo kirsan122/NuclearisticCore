@@ -29,19 +29,32 @@ public class CrusherRecipe implements Recipe<Container> {
         this.energyConsumption = energyConsumption;
     }
 
-    @Override public boolean matches(Container pContainer, Level pLevel) { return ingredient.test(pContainer.getItem(0)); }
-    @Override public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess) { return result.copy(); }
-    @Override public boolean canCraftInDimensions(int pWidth, int pHeight) { return true; }
-    @Override public ItemStack getResultItem(RegistryAccess pRegistryAccess) { return result; }
+
+    @Override
+    public boolean matches(Container pContainer, Level pLevel) {
+        if (this.ingredient.isEmpty()) {
+            return true;
+        }
+        return this.ingredient.test(pContainer.getItem(0));
+    }
+    @Override
+    public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess) { return result.copy(); }
+    @Override
+    public boolean canCraftInDimensions(int pWidth, int pHeight) { return true; }
+    @Override
+    public ItemStack getResultItem(RegistryAccess pRegistryAccess) { return result; }
 
     public ItemStack getResultMain() { return result; }
     public ItemStack getResultSecond() { return resultSecond; }
     public float getSecondChance() { return secondChance; }
     public int getEnergyConsumption() { return energyConsumption; }
 
-    @Override public ResourceLocation getId() { return id; }
-    @Override public RecipeSerializer<?> getSerializer() { return NCRecipes.CRUSHER_SERIALIZER.get(); }
-    @Override public RecipeType<?> getType() { return NCRecipes.CRUSHER_RECIPE_TYPE.get(); }
+    @Override
+    public ResourceLocation getId() { return id; }
+    @Override
+    public RecipeSerializer<?> getSerializer() { return NCRecipes.CRUSHER_SERIALIZER.get(); }
+    @Override
+    public RecipeType<?> getType() { return NCRecipes.CRUSHER_RECIPE_TYPE.get(); }
 
     @Override
     public net.minecraft.core.NonNullList<Ingredient> getIngredients() {
@@ -52,22 +65,20 @@ public class CrusherRecipe implements Recipe<Container> {
 
     public static class Serializer implements RecipeSerializer<CrusherRecipe> {
         @Override
-        public CrusherRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
-            Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(pSerializedRecipe, "ingredient"));
+        public CrusherRecipe fromJson(ResourceLocation pRecipeId, JsonObject json) {
+            Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "ingredient"));
 
-
-            ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(pSerializedRecipe, "result"));
-
+            ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
             ItemStack resultSecond = ItemStack.EMPTY;
             float chance = 0.0f;
-            if (pSerializedRecipe.has("resultSecond")) {
-                JsonObject secondObj = GsonHelper.getAsJsonObject(pSerializedRecipe, "resultSecond");
+            if (json.has("resultSecond")) {
+                JsonObject secondObj = GsonHelper.getAsJsonObject(json, "resultSecond");
                 resultSecond = ShapedRecipe.itemStackFromJson(secondObj);
                 chance = GsonHelper.getAsFloat(secondObj, "chance", 1.0f);
             }
 
-            int energyConsumption = GsonHelper.getAsInt(pSerializedRecipe, "energyConsumption");
+            int energyConsumption = GsonHelper.getAsInt(json, "energyConsumption");
             return new CrusherRecipe(pRecipeId, ingredient, result, resultSecond, chance, energyConsumption);
         }
 

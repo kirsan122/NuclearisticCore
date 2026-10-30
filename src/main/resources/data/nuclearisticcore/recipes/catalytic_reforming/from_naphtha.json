@@ -1,0 +1,18 @@
+{
+  "type": "nuclearisticcore:catalytic_reforming",
+  "input": {
+    "fluid": "nuclearisticcore:naphtha",
+    "amount": 100
+  },
+  "outputs": {
+    "output_0": {
+      "fluid": "nuclearisticcore:gasoline",
+      "amount": 75
+    },
+    "output_1": {
+      "fluid": "nuclearisticcore:kerosene",
+      "amount": 25
+    }
+  },
+  "catalyticTier": 1
+}
