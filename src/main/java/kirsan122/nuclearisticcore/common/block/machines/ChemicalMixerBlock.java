@@ -1,6 +1,5 @@
 package kirsan122.nuclearisticcore.common.block.machines;
 
-import kirsan122.nuclearisticcore.common.blockEntity.machines.CatalyticReformerBlockEntity;
 import kirsan122.nuclearisticcore.common.blockEntity.machines.ChemicalMixerBlockEntity;
 import kirsan122.nuclearisticcore.common.init.NCBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -52,9 +51,9 @@ public class ChemicalMixerBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide()) {
             BlockEntity entity = level.getBlockEntity(pos);
-            if (entity instanceof CatalyticReformerBlockEntity) {
+            if (entity instanceof ChemicalMixerBlockEntity) {
 
-                NetworkHooks.openScreen((ServerPlayer) player, (CatalyticReformerBlockEntity) entity, buf -> buf.writeBlockPos(pos));
+                NetworkHooks.openScreen((ServerPlayer) player, (ChemicalMixerBlockEntity) entity, buf -> buf.writeBlockPos(pos));
             } else {
                 throw new IllegalStateException("NotContainer");
             }
@@ -65,7 +64,7 @@ public class ChemicalMixerBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CatalyticReformerBlockEntity(pos, state);
+        return new ChemicalMixerBlockEntity(pos, state);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class ChemicalMixerBlock extends BaseEntityBlock {
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        if (blockEntity instanceof CatalyticReformerBlockEntity electrolyzerTile && !level.isClientSide() && !player.isCreative()) {
+        if (blockEntity instanceof ChemicalMixerBlockEntity electrolyzerTile && !level.isClientSide() && !player.isCreative()) {
 
             ItemStack dropStack = new ItemStack(this);
 
@@ -112,7 +111,7 @@ public class ChemicalMixerBlock extends BaseEntityBlock {
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof CatalyticReformerBlockEntity) {
+            if (blockEntity instanceof ChemicalMixerBlockEntity) {
                 level.removeBlockEntity(pos);
             }
         }

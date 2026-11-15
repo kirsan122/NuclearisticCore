@@ -4,6 +4,9 @@ import kirsan122.nuclearisticcore.api.IConfigurableBE;
 import kirsan122.nuclearisticcore.api.IRedstoneConfigurable;
 import kirsan122.nuclearisticcore.api.IUpgradableBE;
 import kirsan122.nuclearisticcore.api.RedstoneModes;
+import kirsan122.nuclearisticcore.common.blockEntity.components.RedstoneComponent;
+import kirsan122.nuclearisticcore.common.blockEntity.components.SideConfigComponent;
+import kirsan122.nuclearisticcore.common.blockEntity.components.UpgradeComponent;
 import kirsan122.nuclearisticcore.common.util.NCTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,10 +17,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by kirsan122,
@@ -25,24 +30,113 @@ import net.minecraftforge.items.ItemStackHandler;
  * Time: 19:32
  */
 public abstract class UniversalBlockEntity extends BlockEntity implements IRedstoneConfigurable, IUpgradableBE, IConfigurableBE {
-    protected RedstoneModes redstoneMode = RedstoneModes.IGNORED;
+    @Nullable
+    protected final RedstoneComponent redstoneComp;
+    @Nullable
+    protected final UpgradeComponent upgradeComp;
+    @Nullable
+    protected final SideConfigComponent sideConfigComp;
 
-    protected final ItemStackHandler upgradeSlots = new ItemStackHandler(4) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return isItemInUpgradeHandlerValid(stack);
-        }
-    };
-
-    protected final int[] sideConfigModes = new int[6];
-
-    public UniversalBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public UniversalBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, boolean useRedstone, boolean useUpgrades, boolean useSides) {
         super(type, pos, state);
+        this.redstoneComp = useRedstone ? new RedstoneComponent(this) : null;
+        this.upgradeComp = useUpgrades ? new UpgradeComponent(this) : null;
+        this.sideConfigComp = useSides ? new SideConfigComponent(this) : null;
+    }
+
+    @Override
+    public boolean isRedstoneConfigurable() {
+        return redstoneComp != null;
+    }
+
+    @Override
+    public boolean isUpgradable() {
+        return upgradeComp != null;
+    }
+
+    @Override
+    public boolean isSideConfigurable() {
+        return sideConfigComp != null;
+    }
+
+    @Override
+    public RedstoneModes getRedstoneMode() {
+        if (isRedstoneConfigurable()) {
+            assert redstoneComp != null;
+            return redstoneComp.getRedstoneMode();
+        } else {
+            return RedstoneModes.IGNORED;
+        }
+    }
+
+    @Override
+    public void setRedstoneMode(RedstoneModes mode) {
+        if (isRedstoneConfigurable()) {
+            assert redstoneComp != null;
+            redstoneComp.setRedstoneMode(mode);
+        }
+    }
+
+    @Override
+    public ItemStackHandler getUpgradeSlots() {
+        if (isUpgradable()) {
+            assert upgradeComp != null;
+            return upgradeComp.getUpgradeSlots();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public int getDeviceSideMode(int sideId) {
+        if (isSideConfigurable()) {
+            assert sideConfigComp != null;
+            return sideConfigComp.getSideMode(sideId);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public void setDeviceSideMode(int sideId, int mode) {
+        if (isSideConfigurable()) {
+            assert sideConfigComp != null;
+            sideConfigComp.setSideMode(sideId, mode);
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        if (isRedstoneConfigurable()) {
+            assert redstoneComp != null;
+            redstoneComp.save(tag);
+        }
+        if (isUpgradable()) {
+            assert upgradeComp != null;
+            upgradeComp.save(tag);
+        }
+        if (isSideConfigurable()) {
+            assert sideConfigComp != null;
+            sideConfigComp.save(tag);
+        }
+        super.saveAdditional(tag);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (isRedstoneConfigurable()) {
+            assert redstoneComp != null;
+            redstoneComp.load(tag);
+        }
+        if (isUpgradable()) {
+            assert upgradeComp != null;
+            upgradeComp.load(tag);
+        }
+        if (isSideConfigurable()) {
+            assert sideConfigComp != null;
+            sideConfigComp.load(tag);
+        }
     }
 
     public boolean isItemInUpgradeHandlerValid(ItemStack stack) {
@@ -107,7 +201,7 @@ public abstract class UniversalBlockEntity extends BlockEntity implements IRedst
         });
     }
 
-    public static void drainItemToTank(IFluidHandler tank, ItemStackHandler itemHandler, int inputSlot, int outputSlot, BlockEntity blockEntity) {
+    public static void drainItemToTank(IFluidHandler tank, ItemStackHandler itemHandler, int inputSlot, int outputSlot, BlockEntity entity) {
         ItemStack inputStack = itemHandler.getStackInSlot(inputSlot);
         if (inputStack.isEmpty()) return;
 
@@ -117,7 +211,7 @@ public abstract class UniversalBlockEntity extends BlockEntity implements IRedst
         if (simResult.isSuccess()) {
             ItemStack emptyContainer = simResult.getResult();
 
-            boolean canInsert = false;
+            boolean canInsert;
 
             if (inputSlot == outputSlot) {
                 canInsert = inputStack.getCount() == 1;
@@ -133,13 +227,13 @@ public abstract class UniversalBlockEntity extends BlockEntity implements IRedst
                     itemHandler.extractItem(inputSlot, 1, false);
 
                     itemHandler.insertItem(outputSlot, realResult.getResult(), false);
-                    blockEntity.setChanged();
+                    entity.setChanged();
                 }
             }
         }
     }
 
-    public static void fillItemFromTank(IFluidHandler tank, ItemStackHandler itemHandler, int inputSlot, int outputSlot, BlockEntity blockEntity) {
+    public static void fillItemFromTank(IFluidHandler tank, ItemStackHandler itemHandler, int inputSlot, int outputSlot, BlockEntity entity) {
         ItemStack inputStack = itemHandler.getStackInSlot(inputSlot);
         if (inputStack.isEmpty() || tank.getFluidInTank(0).isEmpty()) return;
 
@@ -164,61 +258,30 @@ public abstract class UniversalBlockEntity extends BlockEntity implements IRedst
                     itemHandler.extractItem(inputSlot, 1, false);
 
                     itemHandler.insertItem(outputSlot, realResult.getResult(), false);
-                    blockEntity.setChanged();
+                    entity.setChanged();
                 }
             }
         }
     }
 
     @Override
-    public RedstoneModes getRedstoneMode() {
-        return this.redstoneMode;
+    public net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+    }
+
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override
-    public void setRedstoneMode(RedstoneModes mode) {
-        this.redstoneMode = mode;
-    }
-
-    @Override
-    public ItemStackHandler getUpgradeSlots() {
-        return this.upgradeSlots;
-    }
-
-    @Override
-    public int getDeviceSideMode(int sideId) {
-        if (sideId < 0 || sideId >= 6) return 0;
-        return this.sideConfigModes[sideId];
-    }
-
-    @Override
-    public void setDeviceSideMode(int sideId, int mode) {
-        if (sideId >= 0 && sideId < 6) {
-            this.sideConfigModes[sideId] = mode;
-            this.setChanged();
+    public void onDataPacket(net.minecraft.network.Connection net, net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket pkt) {
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) {
+            load(tag);
         }
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.put("upgrade_slots", upgradeSlots.serializeNBT());
-        tag.putString("RedstoneMode", this.redstoneMode.getSerializedName());
-        tag.putIntArray("SideConfigs", this.sideConfigModes);
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.contains("RedstoneMode")) {
-            this.redstoneMode = RedstoneModes.valueOf(tag.getString("RedstoneMode").toUpperCase());
-        }
-        if (tag.contains("SideConfigs", net.minecraft.nbt.Tag.TAG_INT_ARRAY)) {
-            int[] savedModes = tag.getIntArray("SideConfigs");
-            if (savedModes.length == 6) {
-                System.arraycopy(savedModes, 0, this.sideConfigModes, 0, 6);
-            }
-        }
-        upgradeSlots.deserializeNBT(tag.getCompound("upgrade_slots"));
     }
 }

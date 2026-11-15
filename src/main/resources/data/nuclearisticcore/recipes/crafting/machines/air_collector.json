@@ -6,22 +6,25 @@
       "item": "nuclearisticcore:fan"
     },
     "F": {
-      "tag": "forge:machine_frames"
+      "item": "nuclearisticcore:machine_frame"
     },
-    "S": {
-      "tag": "forge:plates/steel"
+    "I": {
+      "tag": "forge:plates/bronze"
     },
     "B": {
-      "tag": "forge:ingots/bronze"
+      "item": "nuclearisticcore:bakelite"
     },
     "C": {
       "tag": "forge:circuits/basic"
+    },
+    "T": {
+      "item": "nuclearisticcore:tin_shell"
     }
   },
   "pattern": [
-    "SSS",
+    "BTB",
     "VFV",
-    "BCB"
+    "ICI"
   ],
   "result": {
     "item": "nuclearisticcore:air_collector"

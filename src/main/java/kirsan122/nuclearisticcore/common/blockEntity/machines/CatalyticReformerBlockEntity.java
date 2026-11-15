@@ -1,6 +1,7 @@
 package kirsan122.nuclearisticcore.common.blockEntity.machines;
 
-import kirsan122.nuclearisticcore.api.RedstoneModes;
+import kirsan122.nuclearisticcore.api.upgrades.IEnergyUpgrade;
+import kirsan122.nuclearisticcore.api.upgrades.ISpeedUpgrade;
 import kirsan122.nuclearisticcore.client.gui.GuiData;
 import kirsan122.nuclearisticcore.common.energy.DynamicEnergyStorage;
 import kirsan122.nuclearisticcore.common.init.NCBlockEntities;
@@ -33,6 +34,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,9 +43,9 @@ import org.jetbrains.annotations.Nullable;
  * Data: 23.10.2026,
  * Time: 18:16
  */
-public class CatalyticReformerBlockEntity extends UniversalBlockEntity implements MenuProvider {
-    private final int maxEnergyStorage = 22000;
-    private final int maxCapacity = 18000;
+public class CatalyticReformerBlockEntity extends UniversalBlockEntity implements MenuProvider, ISpeedUpgrade, IEnergyUpgrade {
+    private final int maxEnergyStorage = 12000;
+    private final int maxCapacity = 8000;
     protected final ContainerData data;
     public boolean inventoryChanged = true;
     private CatalyticReformerRecipe cachedRecipe = null;
@@ -73,40 +75,24 @@ public class CatalyticReformerBlockEntity extends UniversalBlockEntity implement
 
 
     public CatalyticReformerBlockEntity(BlockPos pos, BlockState state) {
-        super(NCBlockEntities.CATALYTIC_REFORMER_BE.get(), pos, state);
+        super(NCBlockEntities.CATALYTIC_REFORMER_BE.get(), pos, state, true, true, true);
         this.data = new ContainerData() {
             @Override
             public int get(int index) {
                 return switch (index) {
                     case 2 -> CatalyticReformerBlockEntity.this.energyStorage.getEnergyStored();
                     case 3 -> CatalyticReformerBlockEntity.this.energyStorage.getMaxEnergyStored();
-                    case 4 -> CatalyticReformerBlockEntity.this.redstoneMode.ordinal();
-                    case 5, 6, 7, 8, 9, 10 -> CatalyticReformerBlockEntity.this.sideConfigModes[index - 5];
                     default -> 2;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                switch (index) {
-                    case 4 ->
-                            CatalyticReformerBlockEntity.this.redstoneMode = RedstoneModes.values()[value % RedstoneModes.values().length];
-                    case 5, 6, 7, 8, 9, 10 -> {
-                        CatalyticReformerBlockEntity.this.sideConfigModes[index - 5] = value;
-                        CatalyticReformerBlockEntity.this.setChanged();
-
-                        if (CatalyticReformerBlockEntity.this.level != null && !CatalyticReformerBlockEntity.this.level.isClientSide) {
-                            BlockState state = CatalyticReformerBlockEntity.this.getBlockState();
-                            CatalyticReformerBlockEntity.this.level.sendBlockUpdated(CatalyticReformerBlockEntity.this.worldPosition, state, state, 3);
-                            CatalyticReformerBlockEntity.this.level.updateNeighborsAt(CatalyticReformerBlockEntity.this.worldPosition, state.getBlock());
-                        }
-                    }
-                }
             }
 
             @Override
             public int getCount() {
-                return 11;
+                return 4;
             }
 
         };
@@ -219,7 +205,11 @@ public class CatalyticReformerBlockEntity extends UniversalBlockEntity implement
             return;
         }
 
-        boolean canWork = entity.redstoneMode.canWork(level.hasNeighborSignal(pos));
+        boolean canWork = true;
+        if (entity.isRedstoneConfigurable()) {
+            assert entity.redstoneComp != null;
+            canWork = entity.redstoneComp.getRedstoneMode().canWork(level.hasNeighborSignal(pos));
+        }
         if (canWork) {
             CatalyticReformerRecipe recipe = entity.getCurrentRecipe();
 
@@ -294,10 +284,15 @@ public class CatalyticReformerBlockEntity extends UniversalBlockEntity implement
         tanks[1].readFromNBT(tag.getCompound("outputTank1"));
         tanks[2].readFromNBT(tag.getCompound("outputTank2"));
 
-        this.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
-        this.energyStorage.setEnergyDirect(tag.getInt("energy"));
-        itemHandler.deserializeNBT(tag.getCompound("inventory"));
-        this.inventoryChanged = true;
+        energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
+
+        if (tag.contains("energy")) {
+            energyStorage.deserializeNBT(tag.get("energy"));
+        }
+        if (tag.contains("inventory")) {
+            itemHandler.deserializeNBT(tag.getCompound("inventory"));
+        }
+        inventoryChanged = true;
     }
 
     @Override
@@ -308,8 +303,8 @@ public class CatalyticReformerBlockEntity extends UniversalBlockEntity implement
         if (cap == ForgeCapabilities.ENERGY) {
             if (side != null) {
                 int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
-                if (sideMode == 0 || sideMode == 2) return LazyOptional.empty();
+                int sideMode = getDeviceSideMode(sideId);
+                if (sideMode != 1) return LazyOptional.empty();
             }
             return energyStorageLazyOptional.cast();
         }
@@ -317,58 +312,44 @@ public class CatalyticReformerBlockEntity extends UniversalBlockEntity implement
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (side != null) {
                 int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
+                int sideMode = getDeviceSideMode(sideId);
 
-                if (sideMode == 0) return LazyOptional.empty();
-                switch (sideMode) {
-                    case 1 -> {
-                        return handlers[0].cast();
-                    }
-                    case 2 -> {
-                        return handlers[1].cast();
-                    }
+                if (sideMode == 2) {
+                    if (side == Direction.WEST) return handlers[1].cast();
+                    if (side == Direction.EAST) return handlers[2].cast();
                 }
+
             }
-            return handlers[1].cast();
+            return LazyOptional.empty();
         }
 
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (side != null) {
-                int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
-                if (sideMode == 0) return LazyOptional.empty();
-                switch (sideMode) {
-                    case 1, 2 -> {
-                        return itemHandlerLazyOptional.cast();
-                    }
-                }
+            if (side == null) {
+                return itemHandlerLazyOptional.cast();
             }
-            return itemHandlerLazyOptional.cast();
+
+            int sideId = relativeSide.get3DDataValue();
+            int sideMode = getDeviceSideMode(sideId);
+
+            if (sideMode == 0) return LazyOptional.empty();
+
+            if (sideMode == 1) {
+                return LazyOptional.of(() -> new RangedWrapper(itemHandler, 0, 1)).cast();
+            }
+
+            if (sideMode == 2) {
+                return LazyOptional.of(() -> new RangedWrapper(itemHandler, 2, 4) {
+                    @Override
+                    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+                        return stack;
+                    }
+                }).cast();
+            }
+
+            return LazyOptional.of(() -> new RangedWrapper(itemHandler, 1, 2)).cast();
         }
 
         return super.getCapability(cap, side);
-    }
-
-
-    @Override
-    public net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
-    }
-
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag);
-        return tag;
-    }
-
-    @Override
-    public void onDataPacket(net.minecraft.network.Connection net, net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            load(tag);
-        }
     }
 
     @Override

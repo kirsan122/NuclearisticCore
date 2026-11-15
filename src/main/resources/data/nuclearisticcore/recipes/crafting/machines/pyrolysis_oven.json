@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "BSB",
+    "IMI",
+    "TET"
+  ],
+  "key": {
+    "I": {
+      "item": "nuclearisticcore:steel_shell"
+    },
+    "M": {
+      "item": "nuclearisticcore:machine_frame"
+    },
+    "E": {
+      "tag": "forge:circuits/advanced"
+    },
+
+    "B": {
+      "tag": "forge:plates/bronze"
+    },
+    "S": {
+      "item": "minecraft:redstone"
+    },
+
+    "T": {
+      "tag": "forge:plates/steel"
+    }
+  },
+  "result": {
+    "item": "nuclearisticcore:pyrolysis_oven"
+  },
+  "show_notification": true
+}

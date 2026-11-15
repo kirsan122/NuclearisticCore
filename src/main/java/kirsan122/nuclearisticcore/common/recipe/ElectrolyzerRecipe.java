@@ -15,55 +15,31 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ElectrolyzerRecipe implements Recipe<Container> {
-    private final ResourceLocation id;
-    private final FluidStack inputFluid;
-    private final FluidStack[] outputFluids;
-
-    public ElectrolyzerRecipe(ResourceLocation id, FluidStack stack, FluidStack[] outputFluids) {
-        this.id = id;
-        this.inputFluid = stack;
-        this.outputFluids = outputFluids;
-    }
-
-    public FluidStack getInputFluid() {
-        return inputFluid;
-    }
-
-    public FluidStack[] getOutputs() {
-        return outputFluids;
-    }
-
+public record ElectrolyzerRecipe(ResourceLocation id, FluidStack inputFluid, FluidStack[] outputFluids) implements Recipe<Container> {
     @Override
     public boolean matches(Container pContainer, Level pLevel) {
         return false;
     }
-
     @Override
     public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess) {
         return ItemStack.EMPTY;
     }
-
     @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return true;
     }
-
     @Override
     public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
         return ItemStack.EMPTY;
     }
-
     @Override
     public ResourceLocation getId() {
         return id;
     }
-
     @Override
     public RecipeSerializer<?> getSerializer() {
         return NCRecipes.ELECTROLYZER_SERIALIZER.get();
     }
-
     @Override
     public RecipeType<?> getType() {
         return NCRecipes.ELECTROLYZER_TYPE.get();

@@ -2,11 +2,22 @@ package kirsan122.nuclearisticcore.common.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import kirsan122.nuclearisticcore.common.item.upgrades.EnergyUpgradeItem;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kirsan122,
@@ -22,10 +33,10 @@ public final class RecipeUtils {
      * formatted with an index-based suffix (e.g., {@code prefix + 0}, {@code prefix + 1}).
      * </p>
      *
-     * @param json          the root {@link JsonObject} of the recipe.
-     * @param howManyTanks     the total number of tanks (the precise length of the returned array).
-     * @param parentKey           the JSON key of the parent object containing fluids (e.g., "inputFluids").
-     * @param prefix the prefix for indexed sub-objects (e.g., "input_" becomes "input_0").
+     * @param json         the root {@link JsonObject} of the recipe.
+     * @param howManyTanks the total number of tanks (the precise length of the returned array).
+     * @param parentKey    the JSON key of the parent object containing fluids (e.g., "inputFluids").
+     * @param prefix       the prefix for indexed sub-objects (e.g., "input_" becomes "input_0").
      * @return a non-null array of {@link FluidStack} objects.
      * @throws JsonSyntaxException if the fluid specified in the JSON is missing, misspelled,
      *                             or not registered in the game registry.
@@ -42,7 +53,11 @@ public final class RecipeUtils {
                 var fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
 
                 if (fluid != null) {
-                    fluids[i] = new FluidStack(fluid, GsonHelper.getAsInt(object, "amount"));
+                    if (object.has("amount")) {
+                        fluids[i] = new FluidStack(fluid, GsonHelper.getAsInt(object, "amount"));
+                    } else {
+                        fluids[i] = new FluidStack(fluid, 100);
+                    }
                 } else {
                     throw new JsonSyntaxException("Unknown or unregistered fluid '" + fluidName + "' in recipe object: " + prefix + i);
                 }
@@ -61,8 +76,8 @@ public final class RecipeUtils {
      * it throws a syntax exception to halt recipe loading.
      * </p>
      *
-     * @param json  the {@link JsonObject} representing the fluid entry (must contain "fluid" and "amount").
-     * @param key   the JSON key of the fluid object (e.g., "fluid_input").
+     * @param json the {@link JsonObject} representing the fluid entry (must contain "fluid" and "amount").
+     * @param key  the JSON key of the fluid object (e.g., "fluid_input").
      * @return a non-null {@link FluidStack} with the parsed fluid and amount.
      * @throws JsonSyntaxException if the fluid specified in the JSON is missing, misspelled,
      *                             or not registered in the game registry.
@@ -81,7 +96,9 @@ public final class RecipeUtils {
         if (fluid == null) {
             throw new com.google.gson.JsonSyntaxException("Unknown or unregistered fluid '" + fluidName + "' at key: " + key);
         }
-
+        if (!object.has("amount")) {
+            return new FluidStack(fluid, 100);
+        }
         int amount = GsonHelper.getAsInt(object, "amount");
         return new FluidStack(fluid, amount);
     }
@@ -94,7 +111,7 @@ public final class RecipeUtils {
      * @since Alpha v0.0.5
      */
     public static void writeFluidArray(FriendlyByteBuf buffer, FluidStack[] fluids) {
-        
+
         buffer.writeVarInt(fluids.length);
         for (FluidStack fluid : fluids) {
             buffer.writeFluidStack(fluid);
@@ -116,5 +133,4 @@ public final class RecipeUtils {
         }
         return fluids;
     }
-
 }

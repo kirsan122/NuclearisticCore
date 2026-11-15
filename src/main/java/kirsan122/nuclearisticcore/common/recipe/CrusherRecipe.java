@@ -12,24 +12,7 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class CrusherRecipe implements Recipe<Container> {
-    private final ResourceLocation id;
-    private final Ingredient ingredient;
-    private final ItemStack result;
-    private final ItemStack resultSecond;
-    private final float secondChance;
-    private final int energyConsumption;
-
-    public CrusherRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, ItemStack resultSecond, float secondChance, int energyConsumption) {
-        this.id = id;
-        this.ingredient = ingredient;
-        this.result = result;
-        this.resultSecond = resultSecond;
-        this.secondChance = secondChance;
-        this.energyConsumption = energyConsumption;
-    }
-
-
+public record CrusherRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, ItemStack resultSecond, float secondChance, int energyConsumption) implements Recipe<Container> {
     @Override
     public boolean matches(Container pContainer, Level pLevel) {
         if (this.ingredient.isEmpty()) {
@@ -43,19 +26,12 @@ public class CrusherRecipe implements Recipe<Container> {
     public boolean canCraftInDimensions(int pWidth, int pHeight) { return true; }
     @Override
     public ItemStack getResultItem(RegistryAccess pRegistryAccess) { return result; }
-
-    public ItemStack getResultMain() { return result; }
-    public ItemStack getResultSecond() { return resultSecond; }
-    public float getSecondChance() { return secondChance; }
-    public int getEnergyConsumption() { return energyConsumption; }
-
     @Override
     public ResourceLocation getId() { return id; }
     @Override
     public RecipeSerializer<?> getSerializer() { return NCRecipes.CRUSHER_SERIALIZER.get(); }
     @Override
     public RecipeType<?> getType() { return NCRecipes.CRUSHER_RECIPE_TYPE.get(); }
-
     @Override
     public net.minecraft.core.NonNullList<Ingredient> getIngredients() {
         net.minecraft.core.NonNullList<Ingredient> list = net.minecraft.core.NonNullList.create();

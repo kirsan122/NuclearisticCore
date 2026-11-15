@@ -1,0 +1,16 @@
+{
+  "type": "nuclearisticcore:chemical_mixing",
+  "ingredient": {
+    "tag": "forge:dusts/coal",
+    "count": 2
+  },
+  "inputFluids": {
+    "input_0": {
+      "fluid": "nuclearisticcore:associated_petroleum_gas",
+      "amount": 500
+    }
+  },
+  "resultItem": {
+    "item": "nuclearisticcore:bakelite"
+  }
+}

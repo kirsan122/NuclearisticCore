@@ -1,4 +1,4 @@
-package kirsan122.nuclearisticcore.common.inventory;
+package kirsan122.nuclearisticcore.common.inventory.slot;
 
 import kirsan122.nuclearisticcore.common.util.NCTags;
 import net.minecraftforge.items.IItemHandler;

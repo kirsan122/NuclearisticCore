@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "1": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "pattern": [
+    " 1 ",
+    "1 1",
+    " 1 "
+  ],
+  "result": {
+    "item": "nuclearisticcore:iron_shell"
+  },
+  "show_notification": true
+}

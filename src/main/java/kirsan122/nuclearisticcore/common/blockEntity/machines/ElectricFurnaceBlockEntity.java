@@ -1,6 +1,7 @@
 package kirsan122.nuclearisticcore.common.blockEntity.machines;
 
-import kirsan122.nuclearisticcore.api.RedstoneModes;
+import kirsan122.nuclearisticcore.api.upgrades.IEnergyUpgrade;
+import kirsan122.nuclearisticcore.api.upgrades.ISpeedUpgrade;
 import kirsan122.nuclearisticcore.client.gui.GuiData;
 import kirsan122.nuclearisticcore.common.block.machines.ElectricFurnaceBlock;
 import kirsan122.nuclearisticcore.common.energy.DynamicEnergyStorage;
@@ -36,8 +37,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements MenuProvider {
-    private final int maxEnergyStorage = 10000;
+public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements MenuProvider, ISpeedUpgrade, IEnergyUpgrade {
+    private final int maxEnergyStorage = 8500;
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 200;
@@ -64,11 +65,6 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
 
-            if (level != null) {
-                boolean hasSignal = level.hasNeighborSignal(worldPosition);
-                if (!redstoneMode.canWork(hasSignal)) return 0;
-            }
-
             int received = super.receiveEnergy(maxReceive, simulate);
             if (received > 0 && !simulate) {
                 setChanged();
@@ -77,10 +73,10 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
         }
     };
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
-    private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
+    private LazyOptional<IEnergyStorage> energyStorageLazyOptional = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
 
     public ElectricFurnaceBlockEntity(BlockPos pos, BlockState state) {
-        super(NCBlockEntities.ELECTRIC_FURNACE_BE.get(), pos, state);
+        super(NCBlockEntities.ELECTRIC_FURNACE_BE.get(), pos, state, true, true, true);
         this.data = new ContainerData() {
             @Override
             public int get(int index) {
@@ -89,35 +85,17 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
                     case 1 -> ElectricFurnaceBlockEntity.this.maxProgress;
                     case 2 -> ElectricFurnaceBlockEntity.this.energyStorage.getEnergyStored();
                     case 3 -> ElectricFurnaceBlockEntity.this.energyStorage.getMaxEnergyStored();
-                    case 4 -> ElectricFurnaceBlockEntity.this.redstoneMode.ordinal();
-                    case 5, 6, 7, 8, 9, 10 -> ElectricFurnaceBlockEntity.this.sideConfigModes[index - 5];
                     default -> 0;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                switch (index) {
-                    case 0 -> ElectricFurnaceBlockEntity.this.progress = value;
-                    case 1 -> ElectricFurnaceBlockEntity.this.maxProgress = value;
-                    case 4 ->
-                            ElectricFurnaceBlockEntity.this.redstoneMode = RedstoneModes.values()[value % RedstoneModes.values().length];
-                    case 5, 6, 7, 8, 9, 10 -> {
-                        ElectricFurnaceBlockEntity.this.sideConfigModes[index - 5] = value;
-                        ElectricFurnaceBlockEntity.this.setChanged();
-
-                        if (ElectricFurnaceBlockEntity.this.level != null && !ElectricFurnaceBlockEntity.this.level.isClientSide) {
-                            BlockState state = ElectricFurnaceBlockEntity.this.getBlockState();
-                            ElectricFurnaceBlockEntity.this.level.sendBlockUpdated(ElectricFurnaceBlockEntity.this.worldPosition, state, state, 3);
-                            ElectricFurnaceBlockEntity.this.level.updateNeighborsAt(ElectricFurnaceBlockEntity.this.worldPosition, state.getBlock());
-                        }
-                    }
-                }
             }
 
             @Override
             public int getCount() {
-                return 11;
+                return 4;
             }
         };
     }
@@ -147,7 +125,11 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
 
         entity.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(entity));
 
-        boolean canWork = entity.redstoneMode.canWork(level.hasNeighborSignal(pos));
+        boolean canWork = true;
+        if (entity.isRedstoneConfigurable()) {
+            assert entity.redstoneComp != null;
+            canWork = entity.redstoneComp.getRedstoneMode().canWork(level.hasNeighborSignal(pos));
+        }
         boolean isCrafting = false;
 
         if (canWork) {
@@ -254,7 +236,7 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
     @Override
     public void saveAdditional(CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("energy", energyStorage.getEnergyStored());
+        tag.put("energy", energyStorage.serializeNBT());
         tag.putInt("progress", progress);
         super.saveAdditional(tag);
     }
@@ -262,10 +244,16 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        itemHandler.deserializeNBT(tag.getCompound("inventory"));
-        energyStorage.receiveEnergy(tag.getInt("energy"), false);
         progress = tag.getInt("progress");
+
         energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
+
+        if (tag.contains("energy")) {
+            energyStorage.deserializeNBT(tag.get("energy"));
+        }
+        if (tag.contains("inventory")) {
+            itemHandler.deserializeNBT(tag.getCompound("inventory"));
+        }
     }
 
     public IItemHandler getItemHandler() {
@@ -276,7 +264,7 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
-        lazyEnergyHandler.invalidate();
+        energyStorageLazyOptional.invalidate();
     }
 
     public ItemStackHandler getInventory() {
@@ -290,92 +278,42 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull net.minecraftforge.common.capabilities.Capability<T> cap, @Nullable net.minecraft.core.Direction side) {
-
-
         Direction blockFacing = this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         Direction relativeSide = GuiData.getRelativeSide(blockFacing, side);
 
-
-        if (cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (side == null) {
                 return lazyItemHandler.cast();
             }
-
-
+            
             int sideId = relativeSide.get3DDataValue();
-            int sideMode = this.sideConfigModes[sideId];
-
-            if (sideMode == 0) return net.minecraftforge.common.util.LazyOptional.empty();
+            int sideMode = getDeviceSideMode(sideId);
 
             if (sideMode == 1) {
-                return net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.RangedWrapper(itemHandler, 0, 1)).cast();
+                return LazyOptional.of(() -> new RangedWrapper(itemHandler, 0, 1)).cast();
             }
 
             if (sideMode == 2) {
-                return net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.RangedWrapper(itemHandler, 2, 4) {
+                return LazyOptional.of(() -> new RangedWrapper(itemHandler, 2, 3) {
                     @Override
-                    public @org.jetbrains.annotations.NotNull net.minecraft.world.item.ItemStack insertItem(int slot, @org.jetbrains.annotations.NotNull net.minecraft.world.item.ItemStack stack, boolean simulate) {
+                    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                         return stack;
                     }
                 }).cast();
             }
-
-            return LazyOptional.of(() -> new RangedWrapper(itemHandler, 1, 2)).cast();
-        }
-
-
-        if (cap == ForgeCapabilities.ENERGY) {
-            if (side != null) {
-                int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
-
-
-                if (sideMode == 0 || sideMode == 2) {
-                    return net.minecraftforge.common.util.LazyOptional.empty();
-                }
-
-
-                if (sideMode == 1) {
-                    return lazyEnergyHandler.cast();
-                }
-            }
-            return lazyEnergyHandler.cast();
-        }
-
-
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (side == null) return net.minecraftforge.common.util.LazyOptional.empty();
-
-            int sideId = relativeSide.get3DDataValue();
-            int sideMode = this.sideConfigModes[sideId];
-
-            if (sideMode == 0) return LazyOptional.empty();
-
-            if (sideMode == 2) {
-                return LazyOptional.of(() -> new net.minecraftforge.fluids.capability.templates.FluidTank(0) {
-                    @Override
-                    public int fill(net.minecraftforge.fluids.FluidStack resource, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction action) {
-                        return 0;
-                    }
-                }).cast();
-            }
-
             return LazyOptional.empty();
         }
 
-
-        String capName = cap.getName();
-        if (capName.contains("IGasHandler") || capName.contains("IInfusionHandler") || capName.contains("IPigmentHandler") || capName.contains("ISlurryHandler")) {
-            if (side != null) {
-                int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
-                if (sideMode == 0) return net.minecraftforge.common.util.LazyOptional.empty();
+        if (cap == ForgeCapabilities.ENERGY) {
+            if (side == null) {
+                return energyStorageLazyOptional.cast();
             }
-            return net.minecraftforge.common.util.LazyOptional.empty();
-        }
+            int sideId = relativeSide.get3DDataValue();
+            int sideMode = getDeviceSideMode(sideId);
 
-        if (capName.contains("IStrictEnergyHandler")) {
-            return net.minecraftforge.common.util.LazyOptional.empty();
+            if (sideMode != 1) return LazyOptional.empty();
+
+            return energyStorageLazyOptional.cast();
         }
 
         return super.getCapability(cap, side);
@@ -384,10 +322,10 @@ public class ElectricFurnaceBlockEntity extends UniversalBlockEntity implements 
     @Override
     public void refreshCaps() {
         this.lazyItemHandler.invalidate();
-        this.lazyEnergyHandler.invalidate();
+        this.energyStorageLazyOptional.invalidate();
 
         this.lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        this.lazyEnergyHandler = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
+        this.energyStorageLazyOptional = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
     }
 
 }

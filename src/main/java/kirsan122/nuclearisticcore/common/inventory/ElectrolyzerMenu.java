@@ -1,31 +1,31 @@
 package kirsan122.nuclearisticcore.common.inventory;
 
-import kirsan122.nuclearisticcore.client.gui.GuiData;
 import kirsan122.nuclearisticcore.common.blockEntity.machines.ElectrolyzerBlockEntity;
 import kirsan122.nuclearisticcore.common.init.NCMachineBlocks;
-import kirsan122.nuclearisticcore.common.init.NCMenues;
+import kirsan122.nuclearisticcore.common.init.NCMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class ElectrolyzerMenu extends UniversalMenu<ElectrolyzerBlockEntity> implements IFluidScreenRender<ElectrolyzerBlockEntity> {
     public ElectrolyzerMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(5));
-    }
+        this(containerId, inv,
+                inv.player.level().getBlockEntity(extraData.readBlockPos()) instanceof ElectrolyzerBlockEntity tile
+                        ? tile
+                        : new ElectrolyzerBlockEntity(extraData.readBlockPos(), inv.player.level().getBlockState(extraData.readBlockPos())),
+                new SimpleContainerData(4)
+        );    }
 
-    public ElectrolyzerMenu(int containerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(NCMenues.ELECTROLYZER_MENU.get(), containerId, (ElectrolyzerBlockEntity) entity, data);
+    public ElectrolyzerMenu(int containerId, Inventory inv, ElectrolyzerBlockEntity entity, ContainerData data) {
+        super(NCMenus.ELECTROLYZER_MENU.get(), containerId, entity, data);
 
         IItemHandler handler = this.blockEntity.getItemHandler();
 

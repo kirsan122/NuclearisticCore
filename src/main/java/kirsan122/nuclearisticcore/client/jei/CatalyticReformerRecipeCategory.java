@@ -133,14 +133,14 @@ public class CatalyticReformerRecipeCategory implements IRecipeCategory<Catalyti
                 }
             }
             if (isMouseOver(x, y, 98)) {
-                FluidStack fluid = entity.getTankCapability(1).map(t -> t.getFluidInTank(0)).orElse(FluidStack.EMPTY);
+                FluidStack fluid = entity.getTankCapability(1).map(t -> t.getFluidInTank(1)).orElse(FluidStack.EMPTY);
                 if (!fluid.isEmpty()) {
                     Rect2i area = new Rect2i(guiLeft + 98, guiTop + 17, 16, 52);
                     return Optional.of(createClickableIngredient(ForgeTypes.FLUID_STACK, fluid, area));
                 }
             }
             if (isMouseOver(x, y, 125)) {
-                FluidStack fluid = entity.getTankCapability(1).map(t -> t.getFluidInTank(0)).orElse(FluidStack.EMPTY);
+                FluidStack fluid = entity.getTankCapability(1).map(t -> t.getFluidInTank(2)).orElse(FluidStack.EMPTY);
                 if (!fluid.isEmpty()) {
                     Rect2i area = new Rect2i(guiLeft + 125, guiTop + 17, 16, 52);
                     return Optional.of(createClickableIngredient(ForgeTypes.FLUID_STACK, fluid, area));

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "nuclearisticcore:machine_frame"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "B": {
+      "tag": "forge:plates/bronze"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "I": {
+      "item": "nuclearisticcore:iron_shell"
+    },
+    "H": {
+      "item": "nuclearisticcore:steel_shell"
+    }
+  },
+  "pattern": [
+    "BHB",
+    "IFI",
+    "SCS"
+  ],
+  "result": {
+    "item": "nuclearisticcore:chemical_mixer"
+  },
+  "show_notification": true
+}

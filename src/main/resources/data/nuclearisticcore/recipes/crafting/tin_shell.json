@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "1": {
+      "tag": "forge:plates/tin"
+    }
+  },
+  "pattern": [
+    " 1 ",
+    "1 1",
+    " 1 "
+  ],
+  "result": {
+    "item": "nuclearisticcore:tin_shell"
+  },
+  "show_notification": true
+}

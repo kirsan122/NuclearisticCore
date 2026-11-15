@@ -59,13 +59,13 @@ public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
                 .addIngredients(recipe.getIngredients().get(0));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 109, 22)
-                .addItemStack(recipe.getResultMain());
+                .addItemStack(recipe.result());
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 109, 46)
-                .addItemStack(recipe.getResultSecond())
+                .addItemStack(recipe.resultSecond())
                 .addRichTooltipCallback((recipeSlotView, tooltip) -> {
-                    if (!recipe.getResultSecond().isEmpty()) {
-                        int percentChance = (int) (recipe.getSecondChance() * 100);
+                    if (!recipe.resultSecond().isEmpty()) {
+                        int percentChance = (int) (recipe.secondChance() * 100);
 
                         tooltip.add(Component.translatable("jei.nuclearisticcore.chance", percentChance));
                     }
@@ -76,7 +76,7 @@ public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
     public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         arrow.draw(graphics, 72, 22);
 
-        int totalEnergyNeeded = recipe.getEnergyConsumption() * 200;
+        int totalEnergyNeeded = recipe.energyConsumption() * 200;
 
         int barHeight = (int) ((long) totalEnergyNeeded * 50 / 10000);
 
@@ -92,7 +92,7 @@ public class CrusherRecipeCategory implements IRecipeCategory<CrusherRecipe> {
     @Override
     public void getTooltip(ITooltipBuilder tooltip, CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (mouseX >= 154 && mouseX <= 160 && mouseY >= 4 && mouseY <= 55) {
-            int energyPerTick = recipe.getEnergyConsumption();
+            int energyPerTick = recipe.energyConsumption();
             int totalEnergy = energyPerTick * 200;
 
             tooltip.add(Component.literal(energyPerTick + " FE/t"));

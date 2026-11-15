@@ -75,10 +75,10 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
     public void setRecipe(IRecipeLayoutBuilder builder, FluidCoolerRecipe recipe, IFocusGroup focuses) {
 
         builder.addSlot(RecipeIngredientRole.INPUT, 3, 3)
-                .addIngredient(ForgeTypes.FLUID_STACK, recipe.getInputFluid())
-                .setFluidRenderer(recipe.getInputFluid().getAmount(), false, 16, 52);
+                .addIngredient(ForgeTypes.FLUID_STACK, recipe.inputFluid())
+                .setFluidRenderer(recipe.inputFluid().getAmount(), false, 16, 52);
 
-        FluidStack output = recipe.getOutputFluid();
+        FluidStack output = recipe.outputFluid();
         if (output != null && !output.isEmpty()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 57, 3)
                     .addIngredient(ForgeTypes.FLUID_STACK, output)
@@ -110,7 +110,7 @@ public class FluidCoolerRecipeCategory implements IRecipeCategory<FluidCoolerRec
 
 
             if (isMouseOver(x, y, 107)) {
-                FluidStack fluid = blockEntity.getTankCapability(1).map(t -> t.getFluidInTank(0)).orElse(FluidStack.EMPTY);
+                FluidStack fluid = blockEntity.getTankCapability(1).map(t -> t.getFluidInTank(1)).orElse(FluidStack.EMPTY);
                 if (!fluid.isEmpty()) {
                     Rect2i area = new Rect2i(guiLeft + 107, guiTop + 18, 16, 52);
                     return Optional.of(createClickableIngredient(ForgeTypes.FLUID_STACK, fluid, area));

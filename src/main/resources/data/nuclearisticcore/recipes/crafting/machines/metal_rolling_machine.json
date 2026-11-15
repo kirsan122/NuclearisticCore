@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " P ",
+    "HMC",
+    "#B#"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "M": {
+      "item": "nuclearisticcore:machine_frame"
+    },
+    "#": {
+      "tag": "forge:plates/iron"
+    },
+    "B": {
+      "tag": "forge:circuits/basic"
+    },
+    "H": {
+      "item": "nuclearisticcore:engineering_hammer"
+    },
+    "C": {
+      "item": "nuclearisticcore:wire_cutters"
+    }
+  },
+  "result": {
+    "item": "nuclearisticcore:metal_rolling_machine"
+  },
+  "show_notification": true
+}

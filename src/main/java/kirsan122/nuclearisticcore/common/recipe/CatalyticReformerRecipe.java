@@ -43,7 +43,7 @@ public record CatalyticReformerRecipe(ResourceLocation id, FluidStack inputFluid
 
             FluidStack input = RecipeUtils.parseFluid(json, "input");
 
-            FluidStack[] outputs = RecipeUtils.parseFluidArray(json, 2, "outputs", "output");
+            FluidStack[] outputs = RecipeUtils.parseFluidArray(json, 2, "outputs", "output_");
 
             int catalyticTier = GsonHelper.getAsInt(json, "catalyticTier");
 

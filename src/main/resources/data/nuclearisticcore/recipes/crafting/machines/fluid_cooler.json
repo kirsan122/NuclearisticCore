@@ -3,26 +3,26 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:circuit/advanced"
+      "tag": "forge:circuits/advanced"
     },
     "F": {
-      "tag": "forge:machine_frames"
+      "item": "nuclearisticcore:advanced_machine_frame"
     },
     "T": {
-      "item": "nuclearisticcore:fluid_tank"
+      "item": "nuclearisticcore:iron_shell"
     },
     "S": {
-      "tag": "forge:plates/steel"
+      "item": "nuclearisticcore:plastic_sheet"
     },
     "H": {
       "item": "nuclearisticcore:heat_exchanger"
     },
-    "G": {
-      "tag": "forge:glass"
+    "C": {
+      "tag": "forge:ingots/copper"
     }
   },
   "pattern": [
-    "GHG",
+    "CHC",
     "TFT",
     "SAS"
   ],

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "BSB",
+    "IMI",
+    "TET"
+  ],
+  "key": {
+    "B": {
+      "tag": "forge:plates/bronze"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "M": {
+      "item": "nuclearisticcore:machine_frame"
+    },
+    "I": {
+      "item": "nuclearisticcore:tin_shell"
+    },
+    "E": {
+      "tag": "forge:circuits/basic"
+    },
+    "T": {
+      "tag": "forge:plates/tin"
+    }
+  },
+  "result": {
+    "item": "nuclearisticcore:catalytic_reformer"
+  },
+  "show_notification": true
+}

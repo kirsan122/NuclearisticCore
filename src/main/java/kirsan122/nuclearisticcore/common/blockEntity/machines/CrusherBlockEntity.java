@@ -1,11 +1,11 @@
 package kirsan122.nuclearisticcore.common.blockEntity.machines;
 
-import kirsan122.nuclearisticcore.api.RedstoneModes;
+import kirsan122.nuclearisticcore.api.upgrades.IEnergyUpgrade;
+import kirsan122.nuclearisticcore.api.upgrades.ISpeedUpgrade;
 import kirsan122.nuclearisticcore.client.gui.GuiData;
 import kirsan122.nuclearisticcore.common.block.machines.CrusherBlock;
 import kirsan122.nuclearisticcore.common.energy.DynamicEnergyStorage;
 import kirsan122.nuclearisticcore.common.init.NCBlockEntities;
-import kirsan122.nuclearisticcore.common.init.NCMachineBlocks;
 import kirsan122.nuclearisticcore.common.init.NCRecipes;
 import kirsan122.nuclearisticcore.common.inventory.CrusherMenu;
 import kirsan122.nuclearisticcore.common.item.upgrades.EnergyUpgradeItem;
@@ -37,11 +37,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProvider {
-    private final int maxEnergyStorage = 10000;
+public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProvider, ISpeedUpgrade, IEnergyUpgrade {
+    private final int maxEnergyStorage = 8500;
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 180;
+    private final int maxProgress = 180;
 
     private final SimpleContainer inventoryWrapper = new SimpleContainer(4);
 
@@ -51,7 +51,7 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
 
 
     public CrusherBlockEntity(BlockPos pos, BlockState state) {
-        super(NCBlockEntities.CRUSHER_BE.get(), pos, state);
+        super(NCBlockEntities.CRUSHER_BE.get(), pos, state, true, true, true);
 
         this.data = new ContainerData() {
             @Override
@@ -61,35 +61,17 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
                     case 1 -> SpeedUpgradeItem.getCookTime(CrusherBlockEntity.this);
                     case 2 -> CrusherBlockEntity.this.energyStorage.getEnergyStored();
                     case 3 -> CrusherBlockEntity.this.energyStorage.getMaxEnergyStored();
-                    case 4 -> CrusherBlockEntity.this.redstoneMode.ordinal();
-                    case 5, 6, 7, 8, 9, 10 -> CrusherBlockEntity.this.sideConfigModes[index - 5];
                     default -> 0;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                switch (index) {
-                    case 0 -> CrusherBlockEntity.this.progress = value;
-                    case 1 -> CrusherBlockEntity.this.maxProgress = value;
-                    case 4 ->
-                            CrusherBlockEntity.this.redstoneMode = RedstoneModes.values()[value % RedstoneModes.values().length];
-                    case 5, 6, 7, 8, 9, 10 -> {
-                        CrusherBlockEntity.this.sideConfigModes[index - 5] = value;
-                        CrusherBlockEntity.this.setChanged();
-
-                        if (CrusherBlockEntity.this.level != null && !CrusherBlockEntity.this.level.isClientSide) {
-                            BlockState state = CrusherBlockEntity.this.getBlockState();
-                            CrusherBlockEntity.this.level.sendBlockUpdated(CrusherBlockEntity.this.worldPosition, state, state, 3);
-                            CrusherBlockEntity.this.level.updateNeighborsAt(CrusherBlockEntity.this.worldPosition, state.getBlock());
-                        }
-                    }
-                }
             }
 
             @Override
             public int getCount() {
-                return 11;
+                return 4;
             }
 
         };
@@ -137,7 +119,6 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
         this.itemHandlerLazyOptional.invalidate();
         this.energyStorageLazyOptional.invalidate();
 
-
         this.itemHandlerLazyOptional = LazyOptional.of(() -> itemHandler);
         this.energyStorageLazyOptional = LazyOptional.of(() -> createEnergyStorageWrapper(this.energyStorage));
     }
@@ -164,9 +145,12 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
 
         entity.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(entity));
 
-        boolean canWork = entity.redstoneMode.canWork(level.hasNeighborSignal(pos));
+        boolean canWork = true;
+        if (entity.isRedstoneConfigurable()) {
+            assert entity.redstoneComp != null;
+            canWork = entity.redstoneComp.getRedstoneMode().canWork(level.hasNeighborSignal(pos));
+        }
         boolean isCrafting = false;
-
 
         if (canWork) {
             Optional<CrusherRecipe> recipe = entity.getCurrentRecipe();
@@ -176,7 +160,7 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
                 CrusherRecipe currentRecipe = recipe.get();
 
                 int currentMaxProgress = SpeedUpgradeItem.getCookTime(entity);
-                int currentEnergyConsumption = SpeedUpgradeItem.getEnergyUsage(currentRecipe.getEnergyConsumption(), entity.getUpgradeSlots());
+                int currentEnergyConsumption = SpeedUpgradeItem.getEnergyUsage(currentRecipe.energyConsumption(), entity.getUpgradeSlots());
 
                 boolean hasEnoughEnergy = entity.energyStorage.getEnergyStored() >= currentEnergyConsumption;
 
@@ -195,7 +179,7 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
                         Optional<CrusherRecipe> nextRecipe = entity.getCurrentRecipe();
                         boolean canContinue = nextRecipe.isPresent() && entity.canInsertIntoOutputSlot(nextRecipe.get());
 
-                        isCrafting = canContinue && entity.energyStorage.getEnergyStored() >= SpeedUpgradeItem.getEnergyUsage(nextRecipe.get().getEnergyConsumption(), entity.getUpgradeSlots());
+                        isCrafting = canContinue && entity.energyStorage.getEnergyStored() >= SpeedUpgradeItem.getEnergyUsage(nextRecipe.get().energyConsumption(), entity.getUpgradeSlots());
                     }
                 }
             } else {
@@ -232,14 +216,14 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
 
     private boolean canInsertIntoOutputSlot(CrusherRecipe recipe) {
         ItemStack mainOut = this.itemHandler.getStackInSlot(2);
-        boolean canMain = mainOut.isEmpty() || (ItemStack.isSameItemSameTags(mainOut, recipe.getResultMain()) &&
-                (mainOut.getCount() + recipe.getResultMain().getCount() <= mainOut.getMaxStackSize()));
+        boolean canMain = mainOut.isEmpty() || (ItemStack.isSameItemSameTags(mainOut, recipe.result()) &&
+                (mainOut.getCount() + recipe.result().getCount() <= mainOut.getMaxStackSize()));
 
 
-        if (!recipe.getResultSecond().isEmpty()) {
+        if (!recipe.resultSecond().isEmpty()) {
             ItemStack secondOut = this.itemHandler.getStackInSlot(3);
-            boolean canSecond = secondOut.isEmpty() || (ItemStack.isSameItemSameTags(secondOut, recipe.getResultSecond()) &&
-                    (secondOut.getCount() + recipe.getResultSecond().getCount() <= secondOut.getMaxStackSize()));
+            boolean canSecond = secondOut.isEmpty() || (ItemStack.isSameItemSameTags(secondOut, recipe.resultSecond()) &&
+                    (secondOut.getCount() + recipe.resultSecond().getCount() <= secondOut.getMaxStackSize()));
             return canMain && canSecond;
         }
 
@@ -250,11 +234,11 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
         assert this.level != null;
 
         this.itemHandler.extractItem(0, 1, false);
-        this.itemHandler.insertItem(2, recipe.getResultMain().copy(), false);
+        this.itemHandler.insertItem(2, recipe.result().copy(), false);
 
-        if (!recipe.getResultSecond().isEmpty()) {
-            if (this.level.random.nextFloat() <= recipe.getSecondChance()) {
-                this.itemHandler.insertItem(3, recipe.getResultSecond().copy(), false);
+        if (!recipe.resultSecond().isEmpty()) {
+            if (this.level.random.nextFloat() <= recipe.secondChance()) {
+                this.itemHandler.insertItem(3, recipe.resultSecond().copy(), false);
             }
         }
 
@@ -277,9 +261,7 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
             }
 
             int sideId = relativeSide.get3DDataValue();
-            int sideMode = this.sideConfigModes[sideId];
-
-            if (sideMode == 0) return LazyOptional.empty();
+            int sideMode = getDeviceSideMode(sideId);
 
             if (sideMode == 1) {
                 return LazyOptional.of(() -> new RangedWrapper(itemHandler, 0, 1)).cast();
@@ -293,41 +275,19 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
                     }
                 }).cast();
             }
+            return LazyOptional.empty();
 
-            return LazyOptional.of(() -> new RangedWrapper(itemHandler, 1, 2)).cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            if (side != null) {
-                int sideId = relativeSide.get3DDataValue();
-                int sideMode = this.sideConfigModes[sideId];
-
-                if (sideMode == 0 || sideMode == 2) {
-                    return net.minecraftforge.common.util.LazyOptional.empty();
-                }
-                if (sideMode == 1) {
-                    return energyStorageLazyOptional.cast();
-                }
+            if (side == null) {
+                return energyStorageLazyOptional.cast();
             }
-            return energyStorageLazyOptional.cast();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (side == null) return net.minecraftforge.common.util.LazyOptional.empty();
-
             int sideId = relativeSide.get3DDataValue();
-            int sideMode = this.sideConfigModes[sideId];
+            int sideMode = getDeviceSideMode(sideId);
 
-            if (sideMode == 0) return LazyOptional.empty();
+            if (sideMode != 1) return LazyOptional.empty();
 
-            if (sideMode == 2) {
-                return LazyOptional.of(() -> new net.minecraftforge.fluids.capability.templates.FluidTank(0) {
-                    @Override
-                    public int fill(net.minecraftforge.fluids.FluidStack resource, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction action) {
-                        return 0;
-                    }
-                }).cast();
-            }
-
-            return LazyOptional.empty();
+            return energyStorageLazyOptional.cast();
         }
 
         return super.getCapability(cap, side);
@@ -344,17 +304,23 @@ public class CrusherBlockEntity extends UniversalBlockEntity implements MenuProv
     @Override
     public void saveAdditional(CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("energy", energyStorage.getEnergyStored());
-        tag.putInt("progress", this.progress);
+        tag.put("energy", energyStorage.serializeNBT());
+        tag.putInt("progress", progress);
         super.saveAdditional(tag);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        itemHandler.deserializeNBT(tag.getCompound("inventory"));
-        this.energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
-        this.energyStorage.setEnergyDirect(tag.getInt("energy"));
-        this.progress = tag.getInt("progress");
+        progress = tag.getInt("progress");
+
+        energyStorage.setCapacity(EnergyUpgradeItem.getMaxEnergy(this));
+
+        if (tag.contains("energy")) {
+            energyStorage.deserializeNBT(tag.get("energy"));
+        }
+        if (tag.contains("inventory")) {
+            itemHandler.deserializeNBT(tag.getCompound("inventory"));
+        }
     }
 }

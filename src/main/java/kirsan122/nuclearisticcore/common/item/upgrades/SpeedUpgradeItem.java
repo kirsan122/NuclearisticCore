@@ -1,6 +1,7 @@
 package kirsan122.nuclearisticcore.common.item.upgrades;
 
 import kirsan122.nuclearisticcore.api.IUpgradableBE;
+import kirsan122.nuclearisticcore.api.upgrades.ISpeedUpgrade;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -33,7 +34,7 @@ public class SpeedUpgradeItem extends Item {
         return count;
     }
 
-    public static int getCookTime(IUpgradableBE tile) {
+    public static <T extends IUpgradableBE & ISpeedUpgrade> int getCookTime(T tile) {
         int count = getUpgradeCount(tile.getUpgradeSlots());
         double time = tile.getBaseProcessTime();
         for (int i = 0; i < count; i++) {

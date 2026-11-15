@@ -61,6 +61,9 @@ public class NCMachineBlocks {
     public static final RegistryObject<Block> CHEMICAL_MIXER = register("chemical_mixer",
             () -> new ChemicalMixerBlock(BlockBehaviour.Properties.copy(CRUSHER.get())));
 
+    public static final RegistryObject<Block> PYROLYSIS_OVEN = register("pyrolysis_oven",
+            () -> new PyrolysisOvenBlock(BlockBehaviour.Properties.copy(CRUSHER.get())));
+
     private static <T extends Block> RegistryObject<T> register(String id, Supplier<T> supplier) {
         return BLOCKS.register(id, supplier);
     }

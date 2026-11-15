@@ -3,8 +3,6 @@ package kirsan122.nuclearisticcore.common.util;
 import kirsan122.nuclearisticcore.NuclearisticCore;
 import kirsan122.nuclearisticcore.api.IUniversalMenu;
 import kirsan122.nuclearisticcore.client.gui.GuiData;
-import kirsan122.nuclearisticcore.common.blockEntity.machines.UniversalBlockEntity;
-import kirsan122.nuclearisticcore.common.inventory.IFluidScreenRender;
 import kirsan122.nuclearisticcore.common.inventory.UniversalMenu;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,7 +10,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +22,6 @@ import java.util.function.Function;
  * Time: 18:29
  */
 public final class RenderUtils {
-
     /**
      * This excellent method renders the slide-out upgrades panel, avoiding code duplication.
      */
@@ -82,7 +78,7 @@ public final class RenderUtils {
                 int btnRelX = GuiData.BUTTON_OFFSETS[i][0];
                 int btnRelY = GuiData.BUTTON_OFFSETS[i][1];
 
-                int sideMode = menu.getSideMode(i);
+                int sideMode = menu.getBlockEntity().getDeviceSideMode(i);
 
                 if (sideMode > 0) {
                     int arrowX = animatedPanelX + btnRelX;

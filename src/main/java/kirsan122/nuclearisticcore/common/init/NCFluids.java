@@ -1,8 +1,8 @@
 package kirsan122.nuclearisticcore.common.init;
 
 import kirsan122.nuclearisticcore.NuclearisticCore;
-import kirsan122.nuclearisticcore.common.liquid.FluidObject;
-import kirsan122.nuclearisticcore.common.liquid.FluidProperties;
+import kirsan122.nuclearisticcore.api.liquid.FluidObject;
+import kirsan122.nuclearisticcore.api.liquid.FluidProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;

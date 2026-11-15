@@ -14,49 +14,27 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class MechanicalSintererRecipe implements Recipe<Container> {
-    private final ResourceLocation id;
-    private final SizedIngredient baseInput;
-    private final SizedIngredient infusorInput;
-    private final ItemStack result;
-
-    public MechanicalSintererRecipe(ResourceLocation id, SizedIngredient baseInput, SizedIngredient infusorInput, ItemStack result) {
-        this.id = id;
-        this.baseInput = baseInput;
-        this.infusorInput = infusorInput;
-        this.result = result;
-    }
-
-    public SizedIngredient getBaseInput() { return this.baseInput; }
-    public SizedIngredient getInfusorInput() { return this.infusorInput; }
-
+public record MechanicalSintererRecipe(ResourceLocation id, SizedIngredient baseInput, SizedIngredient infusorInput, ItemStack result) implements Recipe<Container> {
     @Override
     public boolean matches(Container container, Level level) {
         if (level.isClientSide()) return false;
 
         return baseInput.test(container.getItem(0)) && infusorInput.test(container.getItem(1));
     }
-
     @Override
     public ItemStack assemble(Container container, RegistryAccess registryAccess) {
         return result.copy();
     }
-
     @Override
     public boolean canCraftInDimensions(int width, int height) { return true; }
-
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) { return result; }
-
     @Override
     public ResourceLocation getId() { return id; }
-
     @Override
     public RecipeSerializer<?> getSerializer() { return NCRecipes.MECHANICAL_SINTERER_SERIALIZER.get(); }
-
     @Override
     public RecipeType<?> getType() { return NCRecipes.MECHANICAL_SINTERER_TYPE.get(); }
-
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> vanillaList = NonNullList.create();
@@ -65,9 +43,6 @@ public class MechanicalSintererRecipe implements Recipe<Container> {
         vanillaList.add(this.infusorInput.getIngredient());
         return vanillaList;
     }
-
-    public ItemStack getResult() { return result; }
-
 
     public static class Serializer implements RecipeSerializer<MechanicalSintererRecipe> {
         @Override
@@ -95,5 +70,4 @@ public class MechanicalSintererRecipe implements Recipe<Container> {
             buffer.writeItem(recipe.result);
         }
     }
-
 }

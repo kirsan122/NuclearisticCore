@@ -8,10 +8,10 @@
   ],
   "key": {
     "M": {
-      "tag": "forge:machine_frames"
+      "item": "nuclearisticcore:machine_frame"
     },
     "C": {
-      "tag": "forge:ingots/copper"
+      "item": "nuclearisticcore:copper_coil"
     },
     "P": {
       "tag": "forge:plates/iron"

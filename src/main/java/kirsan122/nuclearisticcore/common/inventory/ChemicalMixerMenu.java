@@ -1,9 +1,8 @@
 package kirsan122.nuclearisticcore.common.inventory;
 
 import kirsan122.nuclearisticcore.common.blockEntity.machines.ChemicalMixerBlockEntity;
-import kirsan122.nuclearisticcore.common.blockEntity.machines.FluidCoolerBlockEntity;
 import kirsan122.nuclearisticcore.common.init.NCMachineBlocks;
-import kirsan122.nuclearisticcore.common.init.NCMenues;
+import kirsan122.nuclearisticcore.common.init.NCMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +10,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.IItemHandler;
@@ -20,11 +18,15 @@ import net.minecraftforge.items.SlotItemHandler;
 public class ChemicalMixerMenu extends UniversalMenu<ChemicalMixerBlockEntity> implements IFluidScreenRender<ChemicalMixerBlockEntity> {
 
     public ChemicalMixerMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(11));
-    }
+        this(containerId, inv,
+                inv.player.level().getBlockEntity(extraData.readBlockPos()) instanceof ChemicalMixerBlockEntity tile
+                        ? tile
+                        : new ChemicalMixerBlockEntity(extraData.readBlockPos(), inv.player.level().getBlockState(extraData.readBlockPos())),
+                new SimpleContainerData(4)
+        );    }
 
-    public ChemicalMixerMenu(int containerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(NCMenues.CHEMICAL_MIXER_MENU.get(), containerId, (ChemicalMixerBlockEntity) entity, data);
+    public ChemicalMixerMenu(int containerId, Inventory inv, ChemicalMixerBlockEntity entity, ContainerData data) {
+        super(NCMenus.CHEMICAL_MIXER_MENU.get(), containerId, entity, data);
 
         IItemHandler handler = this.blockEntity.getItemHandler();
 

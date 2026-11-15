@@ -17,6 +17,13 @@
     "nuclearisticcore:distillation_column_base",
     "nuclearisticcore:distillation_column_section",
     "nuclearisticcore:distillation_column_top",
-    "nuclearisticcore:deepslate_uranium_ore"
+    "nuclearisticcore:deepslate_uranium_ore",
+    "nuclearisticcore:air_collector",
+    "nuclearisticcore:fluid_cooler",
+    "nuclearisticcore:pyrolysis_oven",
+    "nuclearisticcore:catalytic_reformer",
+    "nuclearisticcore:chemical_mixer",
+    "nuclearisticcore:advanced_machine_frame",
+    "nuclearisticcore:electrolyzer"
   ]
 }

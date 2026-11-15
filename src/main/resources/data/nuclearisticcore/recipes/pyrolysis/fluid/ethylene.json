@@ -1,0 +1,11 @@
+{
+  "type": "nuclearisticcore:fluid_pyrolysis",
+  "input": {
+    "fluid": "nuclearisticcore:ethane",
+    "amount": 10
+  },
+  "output": {
+    "fluid": "nuclearisticcore:ethylene",
+    "amount": 7
+  }
+}

@@ -37,7 +37,7 @@
   "tooltip.nuclearisticcore.battery_info.energy": "§7Stored: %s / %s FE",
   "tooltip.nuclearisticcore.battery_info.maxExtract": "Max output: %s FE/t",
   "tooltip.screen.nuclearisticcore.distillation_column": "Distillation Column",
-  "tooltip.nuclearisticcore.bakelite": "Seems like the real thing",
+  "tooltip.nuclearisticcore.bakelite": "Definitely real",
   "jei.nuclearisticcore.chance": "Chance: %s%",
   "jei.nuclearisticcore.generator_fuel": "Generator Fuel",
   "jei.nuclearisticcore.crushing": "Crushing",
@@ -47,7 +47,9 @@
   "jei.nuclearisticcore.tooltip.generator_fuel": "Will generate: %s FE",
   "jei.nuclearisticcore.collecting_air": "Air can be obtained from the 'Air Collector' by supplying it with energy. The mechanism will extract 100 mB of air from the atmosphere every second.",
   "jei.nuclearisticcore.catalytic_reforming": "Catalytic Reforming",
-
+  "jei.nuclearisticcore.chemical_mixing": "Chemical Mixing",
+  "jei.nuclearisticcore.pyrolysis": "Pyrolysis",
+  "jei.nuclearisticcore.fluid_cooling": "Fluid Cooling",
 
   "tooltip.nuclearisticcore.machines.generator": "A great starting power source! Generates energy from anything that burns, such as coal.",
   "tooltip.nuclearisticcore.machines.crusher": "Crushes ore into its dust equivalents and performs many other functions.",
@@ -55,6 +57,10 @@
   "tooltip.nuclearisticcore.machines.mechanical_sinterer": "A mechanism that fuses blocks and items. Needed, for example, for steel production.",
   "tooltip.nuclearisticcore.machines.fluid_tank": "A convenient portable container that allows for the transport of large volumes of liquid.",
   "tooltip.nuclearisticcore.machines.electrolyzer": "A device that separates various liquids using an electric current.",
+  "tooltip.nuclearisticcore.machines.air_collector": "A device capable of collecting air from the atmosphere. The foundation of nuclear energy.",
+  "tooltip.nuclearisticcore.machines.fluid_cooler": "A machine that cools down liquids. Involved in the nitrogen production chain.",
+  "tooltip.nuclearisticcore.machines.catalytic_reformer": "Its main task is processing naphtha and its heavy variant. Requires catalysts to operate.",
+  "tooltip.nuclearisticcore.machines.chemical_mixer": "A versatile mechanism for obtaining various resources.",
   "tooltip.nuclearisticcore.machines.info.energy": "§6Stored energy: §a%s§r/§a5000 FE",
   "tooltip.nuclearisticcore.machines.info.inv": "§bInventory: §7",
   "tooltip.nuclearisticcore.machines.inv.empty": "none",
@@ -122,6 +128,9 @@
   "block.nuclearisticcore.air_collector": "Air Collector",
   "block.nuclearisticcore.fluid_cooler": "Fluid Cooler",
   "block.nuclearisticcore.catalytic_reformer": "Catalytic Reformer",
+  "block.nuclearisticcore.chemical_mixer": "Chemical Mixer",
+  "block.nuclearisticcore.pyrolysis_oven": "Pyrolysis Oven",
+  "block.nuclearisticcore.advanced_machine_frame": "Advanced Machine Frame",
 
   "item.nuclearisticcore.raw_tin": "Raw Tin",
   "item.nuclearisticcore.tin_ingot": "Tin Ingot",
@@ -188,5 +197,7 @@
   "item.nuclearisticcore.steel_shell": "Steel Shell",
   "item.nuclearisticcore.tin_shell": "Tin Shell",
   "item.nuclearisticcore.hevea_boat": "Hevea Boat",
-  "item.nuclearisticcore.hevea_chest_boat": "Hevea Boat with Chest"
+  "item.nuclearisticcore.hevea_chest_boat": "Hevea Boat with Chest",
+  "item.nuclearisticcore.copper_coil": "Copper Coil",
+  "item.nuclearisticcore.plastic_sheet": "Plastic Sheet"
 }

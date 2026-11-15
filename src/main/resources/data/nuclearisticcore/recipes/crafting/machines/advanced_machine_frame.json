@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "#G#",
+    "GFG",
+    "#G#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/steel"
+    },
+    "F": {
+      "item": "nuclearisticcore:machine_frame"
+    },
+    "G": {
+      "item": "nuclearisticcore:bakelite"
+    }
+  },
+  "result": {
+    "item": "nuclearisticcore:advanced_machine_frame"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearisticcore:chemical_mixing",
+  "ingredient": {
+    "item": "minecraft:redstone"
+  },
+  "inputFluids": {
+    "input_0": {
+      "fluid": "nuclearisticcore:ethylene",
+      "amount": 500
+    }
+  },
+  "resultItem": {
+    "item": "nuclearisticcore:plastic_sheet",
+    "count": 2
+  }
+}
